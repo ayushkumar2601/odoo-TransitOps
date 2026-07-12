@@ -290,17 +290,17 @@ export default function DashboardPage() {
 
           <div className="p-5 rounded-2xl bg-surface-container-low border border-white/10">
             <span className="text-xs font-semibold text-on-surface-variant uppercase">Driver Roster Ratios</span>
-            <div className="text-3xl font-bold text-on-surface mt-2">{data.drivers_on_duty} / {data.total_drivers}</div>
+            <div className="text-3xl font-bold text-on-surface mt-2">{data.drivers_on_duty || 0} / {data.total_drivers || 0}</div>
             <div className="text-xs text-emerald-400 mt-1">
-              Average Safety Score: {data.average_safety_score}/100
+              Average Safety Score: {data.average_safety_score || 0}/100
             </div>
           </div>
 
           <div className="p-5 rounded-2xl bg-surface-container-low border border-white/10">
             <span className="text-xs font-semibold text-on-surface-variant uppercase">Monthly Fuel Logs</span>
-            <div className="text-3xl font-bold text-rose-400 mt-2">₹{data.monthly_fuel_cost.toLocaleString()}</div>
+            <div className="text-3xl font-bold text-rose-400 mt-2">₹{(data.monthly_fuel_cost || 0).toLocaleString()}</div>
             <div className="text-xs text-on-surface-variant mt-1">
-              {data.monthly_expenses_total.toLocaleString()} INR total monthly ops
+              {(data.monthly_expenses_total || 0).toLocaleString()} INR total monthly ops
             </div>
           </div>
         </div>

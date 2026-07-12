@@ -24,6 +24,13 @@ export function getDashboardKPIs() {
   const draftTrips = allTrips.filter(t => t.status === 'Draft').length
   const cancelledTrips = allTrips.filter(t => t.status === 'Cancelled').length
 
+  const monthlyFuelCost = store.fuelLogs.reduce((acc, log) => acc + (log.cost || 0), 0)
+  const monthlyExpensesTotal = store.expenses.reduce((acc, exp) => acc + (exp.amount || 0), 0) + monthlyFuelCost
+  const driversOnDuty = totalDrivers - offDutyDrivers - suspendedDrivers
+  const averageSafetyScore = Math.round(
+    allDrivers.reduce((acc, d) => acc + (d.safetyScore || 0), 0) / (totalDrivers || 1)
+  )
+
   const analytics = getAnalyticsSummary()
 
   return {
@@ -38,12 +45,17 @@ export function getDashboardKPIs() {
     drivers_on_trip: onTripDrivers,
     drivers_off_duty: offDutyDrivers,
     drivers_suspended: suspendedDrivers,
+    drivers_on_duty: driversOnDuty,
+    average_safety_score: averageSafetyScore,
 
     total_trips: totalTrips,
     active_trips: activeTrips,
     completed_trips: completedTrips,
     pending_trips: draftTrips,
     cancelled_trips: cancelledTrips,
+
+    monthly_fuel_cost: monthlyFuelCost,
+    monthly_expenses_total: monthlyExpensesTotal,
 
     fleet_utilization_rate: analytics.fleet_utilization_rate
   }
