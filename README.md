@@ -78,6 +78,94 @@ It digitizes the **complete lifecycle** of commercial fleet operations — from 
 
 ---
 
+## 🏗️ Technical Architecture & Autonomous Telemetry Pipeline
+
+TransitOps is engineered as a modern, high-concurrency enterprise logistics operating system combining client-side real-road telemetry simulation with sub-second AI cloud inference.
+
+### 1. Full-Stack Enterprise Architecture & Intelligence Pipeline
+
+```mermaid
+graph TD
+    subgraph Client ["Enterprise Frontend App Router"]
+        UI["React 19 Executive UI Suite"]
+        RBAC["6-Tier RBAC Auth Gateway"]
+        Map["Leaflet & OpenStreetMap Live GPS Engine"]
+        CopilotUI["AI Fleet Copilot Drawer"]
+    end
+
+    subgraph Intelligence ["7-Layer Autonomous Intelligence Engine"]
+        DigitalTwin["Fleet Digital Twin Health Grader"]
+        SmartDispatch["AI Smart Dispatch & Vehicle Matcher"]
+        PredictiveMaint["Predictive Maintenance Risk Evaluator"]
+        DriverRisk["Driver Compliance & Risk Engine"]
+        RoadRouting["OSRM Real-Road Highway Routing"]
+        CarbonCalc["Statutory CO2 & ESG Calculation Engine"]
+        FinancialROI["Haulage Corridor ROI Yield Model"]
+    end
+
+    subgraph AICloud ["Groq Sub-Second AI Cloud"]
+        Llama["Llama 3.3 70B Versatile LLM"]
+        IncidentAI["Groq AI Incident Investigation Pipeline"]
+    end
+
+    subgraph DataLayer ["Enterprise Unified Store"]
+        Telemetry["25 Live GPS Telemetry Profiles"]
+        Corridors["Eastern India NH Corridors & Geofence Hubs"]
+        AuditLog["Immutable Enterprise Audit Ledger"]
+    end
+
+    UI --> RBAC
+    RBAC --> Map
+    Map --> Telemetry
+    Telemetry --> DigitalTwin
+    Telemetry --> RoadRouting
+    DigitalTwin --> SmartDispatch
+    DigitalTwin --> PredictiveMaint
+    CopilotUI --> Llama
+    IncidentAI --> Llama
+    Telemetry --> CarbonCalc
+    Telemetry --> FinancialROI
+```
+
+### 2. Live OSRM Telemetry & AI Copilot Auto-Navigation Loop
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Dispatcher as Fleet Manager / Dispatcher
+    participant Map as Live Operations Console
+    participant Copilot as AI Fleet Copilot
+    participant Telemetry as OSRM Telemetry Pipeline
+    participant Asset as WB-04-G-7712 (Field Asset)
+
+    Dispatcher->>Map: Open Live Operations Center (/live-operations)
+    Map->>Telemetry: Stream 25 Commercial Vehicle GPS Coordinates
+    Telemetry-->>Map: Render Real Highway Geometries (NH-12, NH-19)
+    Dispatcher->>Copilot: Ask "Show vehicles near Durgapur"
+    Copilot->>Telemetry: Query Geofence Hubs & Idling Assets
+    Telemetry-->>Copilot: Identify Idling Refrigerated Truck WB-04-G-7712
+    Copilot->>Map: Trigger Interactive Auto-Navigation FlyTo
+    Map->>Asset: Pan Map & Open Active Asset Telemetry Console
+    Copilot-->>Dispatcher: Display Asset Health, Speed & Click-to-Inspect Pills
+```
+
+### 3. AI Smart Dispatch & Digital Twin Scoring Engine
+
+```mermaid
+flowchart LR
+    A["Freight Trip Request"] --> B{"Evaluate 25 Fleet Assets"}
+    B --> C["Engine Health Grade (45%)"]
+    B --> D["Fuel Reserves (35%)"]
+    B --> E["Driver Safety Score (20%)"]
+    C --> F["Digital Twin Match Score"]
+    D --> F
+    E --> F
+    F --> G["Rank Top 3 Autonomous Recommendations"]
+    G --> H["One-Click Dispatch & RTO Verification"]
+```
+
+---
+
 ## ⚡ Quick Start
 
 ```bash
