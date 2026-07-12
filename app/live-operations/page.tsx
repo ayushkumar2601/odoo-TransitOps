@@ -44,6 +44,7 @@ export default function LiveOperationsPage() {
 
   const [showGeoFences, setShowGeoFences] = useState<boolean>(true)
   const [showRoutes, setShowRoutes] = useState<boolean>(true)
+  const [showHeatmap, setShowHeatmap] = useState<boolean>(false)
 
   // Console Filtering
   const [searchQuery, setSearchQuery] = useState('')
@@ -251,6 +252,16 @@ export default function LiveOperationsPage() {
               >
                 <Layers className="w-3.5 h-3.5" /> Corridors
               </button>
+              <button
+                onClick={() => setShowHeatmap(!showHeatmap)}
+                className={`px-2.5 py-1.5 rounded-lg font-semibold flex items-center gap-1 border transition-all ${
+                  showHeatmap
+                    ? 'bg-rose-500/20 text-rose-300 border-rose-500/40'
+                    : 'bg-white/5 text-on-surface-variant border-white/10'
+                }`}
+              >
+                🔥 Hub Heatmap
+              </button>
             </div>
           </div>
         </div>
@@ -272,6 +283,7 @@ export default function LiveOperationsPage() {
               onSelectVehicle={v => setSelectedVehicle(v)}
               showGeoFences={showGeoFences}
               showRoutes={showRoutes}
+              showHeatmap={showHeatmap}
             />
           </div>
 

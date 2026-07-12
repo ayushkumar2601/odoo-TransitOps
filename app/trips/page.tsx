@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from 'react'
 import { Sidebar } from '../../components/sidebar'
 import { store, Trip, Vehicle, Driver } from '@/lib/mock'
+import { INITIAL_FLEET_TELEMETRY } from '@/lib/live-tracking'
+import { getDispatchRecommendations, DispatchRecommendation } from '@/lib/intelligence'
 import {
   MapPin,
   Send,
@@ -12,7 +14,9 @@ import {
   AlertTriangle,
   X,
   Truck,
-  Users
+  Users,
+  Zap,
+  Brain
 } from 'lucide-react'
 
 export default function TripsPage() {
@@ -32,6 +36,9 @@ export default function TripsPage() {
   const [weight, setWeight] = useState('12000')
   const [dist, setDist] = useState('560')
   const [revenue, setRevenue] = useState('78000')
+
+  // Smart Dispatch Recommendations (derived from source/dest when modal opens)
+  const [dispatchRecs, setDispatchRecs] = useState<DispatchRecommendation[]>([])
 
   function loadAll() {
     setTrips([...store.trips])
@@ -120,7 +127,10 @@ export default function TripsPage() {
           </div>
 
           <button
-            onClick={() => setShowAddModal(true)}
+            onClick={() => {
+              setShowAddModal(true)
+              setDispatchRecs(getDispatchRecommendations(source, dest, [...INITIAL_FLEET_TELEMETRY]))
+            }}
             className="mt-4 md:mt-0 px-4 py-2.5 bg-primary text-on-primary font-semibold rounded-xl flex items-center gap-2 hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 text-sm"
           >
             <Plus className="w-4 h-4" />
@@ -248,6 +258,36 @@ export default function TripsPage() {
                 <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs mb-4 flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 shrink-0" />
                   {err}
+                </div>
+              )}
+
+              {/* Smart Dispatch AI Recommendations Panel */}
+              {dispatchRecs.length > 0 && (
+                <div className="mb-5 p-4 rounded-2xl bg-primary/10 border border-primary/25">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Brain className="w-4 h-4 text-primary animate-pulse" />
+                    <span className="text-xs font-bold uppercase text-primary tracking-wider">AI Smart Dispatch Recommendations</span>
+                  </div>
+                  <div className="space-y-2">
+                    {dispatchRecs.map((rec, idx) => (
+                      <div
+                        key={rec.vehicleId}
+                        onClick={() => setVehicleId(store.vehicles.find(v => v.registrationNumber === rec.registrationNumber)?.id || vehicleId)}
+                        className={`p-3 rounded-xl border cursor-pointer transition-all ${idx === 0 ? 'bg-primary/15 border-primary/40' : 'bg-white/5 border-white/10 hover:border-white/20'}`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <span className="font-bold text-sm text-white">{rec.registrationNumber}</span>
+                            <span className="text-xs text-on-surface-variant ml-2">{rec.vehicleName}</span>
+                          </div>
+                          <span className="font-bold text-xs text-emerald-400 font-mono">{rec.matchScorePercent}% Match</span>
+                        </div>
+                        <div className="text-[11px] text-on-surface-variant mt-1">
+                          {rec.reasoning.slice(0, 2).join(' · ')}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 

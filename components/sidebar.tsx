@@ -20,7 +20,12 @@ import {
   Mail,
   FileSpreadsheet,
   Navigation,
-  Radio
+  Radio,
+  Cpu,
+  MonitorPlay,
+  FileBarChart,
+  Leaf,
+  RotateCcw
 } from 'lucide-react'
 
 interface NavItem {
@@ -102,6 +107,30 @@ const allNavItems: NavItem[] = [
     href: '/audit-log',
     icon: <FileSpreadsheet className="w-5 h-5" />,
     roles: ['Fleet Manager', 'Safety Officer', 'Admin']
+  },
+  {
+    label: 'War Room',
+    href: '/command-center',
+    icon: <MonitorPlay className="w-5 h-5 text-rose-400" />,
+    roles: ['Fleet Manager', 'Admin']
+  },
+  {
+    label: 'Fleet Replay',
+    href: '/replay',
+    icon: <RotateCcw className="w-5 h-5" />,
+    roles: ['Fleet Manager', 'Dispatcher', 'Admin']
+  },
+  {
+    label: 'Daily Briefing',
+    href: '/briefing',
+    icon: <FileBarChart className="w-5 h-5" />,
+    roles: ['Fleet Manager', 'Financial Analyst', 'Admin']
+  },
+  {
+    label: 'Sustainability',
+    href: '/sustainability',
+    icon: <Leaf className="w-5 h-5 text-emerald-400" />,
+    roles: ['Fleet Manager', 'Financial Analyst', 'Admin']
   }
 ]
 

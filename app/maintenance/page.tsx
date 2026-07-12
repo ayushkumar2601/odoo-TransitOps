@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from 'react'
 import { Sidebar } from '../../components/sidebar'
 import { store, MaintenanceRecord, Vehicle } from '@/lib/mock'
+import { INITIAL_FLEET_TELEMETRY } from '@/lib/live-tracking'
+import { getPredictedServiceQueue, PredictiveServiceForecast } from '@/lib/intelligence'
 import {
   Wrench,
   CheckCircle2,
@@ -10,7 +12,9 @@ import {
   AlertTriangle,
   X,
   Truck,
-  Calendar
+  Calendar,
+  Brain,
+  ShieldAlert
 } from 'lucide-react'
 
 export default function MaintenancePage() {
@@ -18,6 +22,9 @@ export default function MaintenancePage() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([])
   const [filter, setFilter] = useState<string>('All')
   const [showAddModal, setShowAddModal] = useState(false)
+  const [predictedQueue] = useState<PredictiveServiceForecast[]>(
+    () => getPredictedServiceQueue([...INITIAL_FLEET_TELEMETRY])
+  )
 
   // Form state
   const [vehicleId, setVehicleId] = useState('')
@@ -78,6 +85,50 @@ export default function MaintenancePage() {
             <Plus className="w-4 h-4" />
             Open Workshop Ticket
           </button>
+        </div>
+
+        {/* AI Predictive Service Queue */}
+        <div className="mb-8 p-5 rounded-2xl bg-surface-container border border-amber-500/20">
+          <div className="flex items-center gap-2 mb-4">
+            <Brain className="w-5 h-5 text-amber-400 animate-pulse" />
+            <h3 className="font-bold text-base text-on-surface">AI Predictive Service Queue</h3>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/30 font-semibold">
+              {predictedQueue.filter(q => q.maintenanceRisk === 'Critical').length} Critical
+            </span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {predictedQueue.slice(0, 6).map((sq) => (
+              <div
+                key={sq.vehicleId}
+                className={`p-4 rounded-xl border flex flex-col gap-2 ${
+                  sq.maintenanceRisk === 'Critical'
+                    ? 'bg-rose-500/10 border-rose-500/30'
+                    : sq.maintenanceRisk === 'Moderate'
+                    ? 'bg-amber-500/10 border-amber-500/30'
+                    : 'bg-surface border-white/10'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-sm text-white">{sq.registrationNumber}</span>
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                      sq.maintenanceRisk === 'Critical'
+                        ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                        : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                    }`}
+                  >
+                    {sq.maintenanceRisk}
+                  </span>
+                </div>
+                <p className="text-xs text-on-surface-variant">{sq.vehicleName}</p>
+                <div className="flex items-center justify-between text-xs pt-1 border-t border-white/10">
+                  <span className="text-on-surface-variant">Predicted: <strong className="text-amber-300 font-mono">{sq.predictedServiceDate}</strong></span>
+                  <span className="text-emerald-400 font-semibold">{sq.confidencePercent}% conf.</span>
+                </div>
+                <p className="text-[11px] text-on-surface-variant">{sq.reasons[0]}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Filter */}

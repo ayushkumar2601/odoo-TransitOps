@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Sidebar } from '../../components/sidebar'
 import { store, Driver } from '@/lib/mock'
 import { CSVImportModal } from '@/components/csv-import-modal'
+import { evaluateDriverRisk } from '@/lib/intelligence'
 import {
   Users,
   ShieldAlert,
@@ -16,7 +17,8 @@ import {
   Upload,
   X,
   AlertCircle,
-  CheckCircle2
+  CheckCircle2,
+  Brain
 } from 'lucide-react'
 
 export default function DriversPage() {
@@ -169,6 +171,7 @@ export default function DriversPage() {
           {filteredDrivers.map((d) => {
             const isExpired = d.expiryDate < today
             const isExpiringSoon = !isExpired && d.expiryDate <= '2026-08-15'
+            const riskProfile = evaluateDriverRisk(d)
 
             return (
               <div
@@ -200,6 +203,21 @@ export default function DriversPage() {
                     >
                       {d.status}
                     </span>
+                  </div>
+
+                  {/* AI Driver Risk Badge */}
+                  <div className={`flex items-center justify-between px-3 py-1.5 rounded-xl text-xs mb-2 border font-semibold ${
+                    riskProfile.riskLevel === 'High'
+                      ? 'bg-rose-500/10 border-rose-500/30 text-rose-300'
+                      : riskProfile.riskLevel === 'Medium'
+                      ? 'bg-amber-500/10 border-amber-500/30 text-amber-300'
+                      : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+                  }`}>
+                    <div className="flex items-center gap-1.5">
+                      <Brain className="w-3.5 h-3.5" />
+                      Risk: <strong>{riskProfile.riskLevel}</strong> ({riskProfile.riskScore}/100)
+                    </div>
+                    <span className="text-[10px] font-normal opacity-75">{riskProfile.riskFactors[0]?.slice(0, 32)}...</span>
                   </div>
 
                   {/* License Expiry Banner if expired or expiring */}

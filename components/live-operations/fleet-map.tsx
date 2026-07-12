@@ -12,6 +12,7 @@ interface FleetMapProps {
   onSelectVehicle: (v: VehicleTelemetry) => void
   showGeoFences: boolean
   showRoutes: boolean
+  showHeatmap?: boolean
 }
 
 function AutoCenterMap({ selectedVehicle }: { selectedVehicle: VehicleTelemetry | null }) {
@@ -95,7 +96,8 @@ export default function FleetMap({
   selectedVehicle,
   onSelectVehicle,
   showGeoFences,
-  showRoutes
+  showRoutes,
+  showHeatmap = false
 }: FleetMapProps) {
   return (
     <div className="w-full h-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl relative">
@@ -111,6 +113,46 @@ export default function FleetMap({
         />
 
         <AutoCenterMap selectedVehicle={selectedVehicle} />
+
+        {/* 0. Regional Hub Thermal Heatmap Density Layers */}
+        {showHeatmap &&
+          EASTERN_INDIA_HUBS.map(hub => (
+            <React.Fragment key={`heatmap-${hub.id}`}>
+              {/* Core Red Thermal Center */}
+              <Circle
+                center={hub.center}
+                radius={hub.radiusMeters * 0.4}
+                pathOptions={{
+                  color: '#ef4444',
+                  fillColor: '#ef4444',
+                  fillOpacity: 0.35,
+                  stroke: false
+                }}
+              />
+              {/* Outer Amber Thermal Ring */}
+              <Circle
+                center={hub.center}
+                radius={hub.radiusMeters * 0.85}
+                pathOptions={{
+                  color: '#f59e0b',
+                  fillColor: '#f59e0b',
+                  fillOpacity: 0.22,
+                  stroke: false
+                }}
+              />
+              {/* Perimeter Blue Halo */}
+              <Circle
+                center={hub.center}
+                radius={hub.radiusMeters * 1.3}
+                pathOptions={{
+                  color: '#3b82f6',
+                  fillColor: '#3b82f6',
+                  fillOpacity: 0.12,
+                  stroke: false
+                }}
+              />
+            </React.Fragment>
+          ))}
 
         {/* 1. Geofenced Logistics Hub Circles */}
         {showGeoFences &&
