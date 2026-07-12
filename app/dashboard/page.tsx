@@ -486,7 +486,7 @@ export default function DashboardPage() {
           </section>
         )}
 
-        {/* 7. Hackathon Demo Scenario Automation & Instant CSV Export Bar */}
+        {/* 7. Enterprise Demo Scenario Automation & Instant CSV Export Bar */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-7 p-5 rounded-2xl bg-[var(--surface-card)] border border-[var(--border)] flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
             <div className="flex items-center gap-3">

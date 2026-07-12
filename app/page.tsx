@@ -625,7 +625,7 @@ export default function LandingPage() {
             </div>
 
             <span>
-              © 2026 TransitOps Platform — Odoo × Adamas University Hackathon
+              © 2026 TransitOps Enterprise OS — All Rights Reserved.
             </span>
           </div>
         </div>

@@ -9,7 +9,7 @@
 
 ### _AI-Powered Fleet Operations Intelligence Platform_
 
-**The only hackathon submission that doesn't feel like a hackathon submission.**
+**An Enterprise-Grade, Autonomous Fleet Intelligence Operating System.**
 
 <br/>
 
@@ -27,7 +27,7 @@
 
 <br/>
 
-[**🎬 10-Min Demo Script**](#-10-minute-judge-demo-script) • [**⚡ Quick Start**](#-quick-start) • [**🧠 Intelligence Layer**](#-intelligence-engine-layer) • [**🌟 Wow Factor**](#-wow-factor-features) • [**📊 Full Feature List**](#-complete-feature-index)
+[**🎬 10-Min Walkthrough**](#-10-minute-product-demo-walkthrough) • [**⚡ Quick Start**](#-quick-start) • [**🧠 Intelligence Layer**](#-intelligence-engine-layer) • [**🌟 Wow Factor**](#-wow-factor-features) • [**📊 Full Feature List**](#-complete-feature-index)
 
 </div>
 
@@ -35,13 +35,13 @@
 
 ## 🏆 What is TransitOps?
 
-TransitOps is a **production-grade, AI-powered Fleet Operations Intelligence Platform** built for the **Odoo × Adamas University Hackathon 2026**.
+TransitOps is a **production-grade, AI-powered Fleet Operations Intelligence Platform** designed for modern commercial transport enterprises.
 
 It digitizes the **complete lifecycle** of commercial fleet operations — from vehicle dispatch and driver compliance enforcement to **real-road GPS simulation, predictive AI maintenance, digital twin health scoring, and executive carbon emissions reporting**.
 
-> _Most hackathon apps are CRUD with a nice UI. TransitOps is a full-stack enterprise intelligence platform that happens to have been built in a hackathon._
+> _Most fleet tools are basic tracking apps. TransitOps is a full-stack enterprise intelligence platform that combines real-road telemetry, AI copilot automation, and predictive digital twins._
 
-### Built to be different from every other submission:
+### Built to redefine enterprise fleet management:
 
 | What Others Build | What TransitOps Builds |
 |:---|:---|
@@ -215,7 +215,7 @@ The AI returns a **structured incident report** — not a chatbot response:
 
 ---
 
-## 🎬 10-Minute Judge Demo Script
+## 🎬 10-Minute Product Demo Walkthrough
 
 > _Step-by-step. Each step is 60 seconds. Optimized for maximum impact._
 
@@ -405,9 +405,9 @@ All 13 business rules (BR-001 to BR-013) are **programmatically enforced** at th
 
 | Document | Purpose |
 |:---|:---|
-| [`TRANSITOPS_FEATURE_SHOWCASE.md`](./TRANSITOPS_FEATURE_SHOWCASE.md) | 📖 Judge-facing product showcase & competitive analysis |
-| [`TRANSITOPS_TECHNICAL_DOCUMENTATION.md`](./TECHNICAL_DOCUMENTATION.md) | 🔧 Architecture, data models, and technical reference |
-| [`PHASE_1_8_ENTERPRISE_INTELLIGENCE_TEST_REPORT.md`](./PHASE_1_8_ENTERPRISE_INTELLIGENCE_TEST_REPORT.md) | 🧪 QA verification report for Phase 1.8 |
+| [`TRANSITOPS_FEATURE_SHOWCASE.md`](./TRANSITOPS_FEATURE_SHOWCASE.md) | 📖 Enterprise product showcase & architectural analysis |
+| [`TECHNICAL_DOCUMENTATION.md`](./TECHNICAL_DOCUMENTATION.md) | 🔧 Architecture, data models, and technical reference |
+| [`PHASE_1_6_TEST_REPORT.md`](./PHASE_1_6_TEST_REPORT.md) | 🧪 Comprehensive Phase 1–6 verification & audit report |
 
 ---
 
@@ -422,7 +422,7 @@ All 13 business rules (BR-001 to BR-013) are **programmatically enforced** at th
 
 <br/>
 
-_Built for the **Odoo × Adamas University Hackathon 2026**_
+_Built for **Enterprise Haulage & Fleet Intelligence**_
 
 <br/>
 

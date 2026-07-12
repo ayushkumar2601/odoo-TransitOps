@@ -69,7 +69,7 @@ export function runMaintenanceScenario(): ScenarioResult {
   store.openMaintenance(
     availVeh.id,
     'Engine Inspection',
-    'Automated Hackathon Demo Scenario — preventive overhaul lock',
+    'Automated Enterprise Demo Scenario — preventive overhaul lock',
     24500
   )
 

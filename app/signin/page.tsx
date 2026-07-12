@@ -99,7 +99,7 @@ export default function SignInPage() {
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/30 text-primary text-xs font-semibold uppercase mb-4">
             <Truck className="w-4 h-4" />
-            Hackathon 2026 Edition
+            Enterprise 2026 Edition
           </div>
           <h1 className="text-3xl font-bold text-on-surface tracking-tight">TransitOps OS</h1>
           <p className="text-sm text-on-surface-variant mt-1">
@@ -112,7 +112,7 @@ export default function SignInPage() {
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-bold uppercase text-primary flex items-center gap-1.5">
               <Zap className="w-3.5 h-3.5" />
-              Quick Fill Hackathon Credentials
+              Quick Fill Demo Credentials
             </span>
             <span className="text-[11px] text-on-surface-variant">Password: transit2026</span>
           </div>
