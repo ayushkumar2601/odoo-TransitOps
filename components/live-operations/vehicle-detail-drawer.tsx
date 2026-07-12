@@ -29,9 +29,9 @@ export default function VehicleDetailDrawer({
   const geoStatus = getVehicleGeoFenceStatus(vehicle.latitude, vehicle.longitude)
 
   return (
-    <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-surface-container border-l border-white/15 shadow-2xl flex flex-col animate-slide-left">
+    <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-[#0B0F19] text-white border-l border-white/20 shadow-2xl flex flex-col animate-slide-left">
       {/* Drawer Header */}
-      <div className="p-5 border-b border-white/10 flex items-center justify-between bg-surface">
+      <div className="p-5 border-b border-white/10 flex items-center justify-between bg-[#111726]">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-primary/15 border border-primary/30 flex items-center justify-center text-primary font-bold">
             <Truck className="w-5 h-5" />
@@ -69,7 +69,7 @@ export default function VehicleDetailDrawer({
       {/* Drawer Body */}
       <div className="flex-1 p-5 overflow-y-auto space-y-6">
         {/* Geofence Hub Badge */}
-        <div className="p-3.5 rounded-2xl bg-surface-container-low border border-white/10 flex items-center justify-between">
+        <div className="p-3.5 rounded-2xl bg-[#161D30] border border-white/10 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <MapPin className="w-4 h-4 text-blue-400" />
             <div>
@@ -134,13 +134,13 @@ export default function VehicleDetailDrawer({
             </div>
           </div>
         ) : (
-          <div className="p-4 rounded-2xl bg-surface-container-low border border-white/10 text-center">
+          <div className="p-4 rounded-2xl bg-[#161D30] border border-white/10 text-center">
             <p className="text-xs font-semibold text-on-surface-variant">Vehicle currently idle at depot/yard.</p>
           </div>
         )}
 
         {/* Operator Personnel Card */}
-        <div className="p-4 rounded-2xl bg-surface-container-low border border-white/10 flex items-center justify-between">
+        <div className="p-4 rounded-2xl bg-[#161D30] border border-white/10 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-primary font-bold text-sm">
               {vehicle.driverName.charAt(0)}
@@ -160,14 +160,14 @@ export default function VehicleDetailDrawer({
         <div>
           <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-3">Live Telemetry Metrics</h4>
           <div className="grid grid-cols-2 gap-3">
-            <div className="p-3.5 rounded-xl bg-surface-container-low border border-white/10">
+            <div className="p-3.5 rounded-xl bg-[#161D30] border border-white/10">
               <div className="flex items-center gap-2 text-on-surface-variant text-xs mb-1">
                 <Gauge className="w-3.5 h-3.5 text-primary" /> Dynamic Speed
               </div>
               <div className="text-lg font-bold text-white font-mono">{vehicle.speed} km/h</div>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-surface-container-low border border-white/10">
+            <div className="p-3.5 rounded-xl bg-[#161D30] border border-white/10">
               <div className="flex items-center gap-2 text-on-surface-variant text-xs mb-1">
                 <Fuel className="w-3.5 h-3.5 text-amber-400" /> Fuel Level
               </div>
@@ -176,7 +176,7 @@ export default function VehicleDetailDrawer({
               </div>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-surface-container-low border border-white/10">
+            <div className="p-3.5 rounded-xl bg-[#161D30] border border-white/10">
               <div className="flex items-center gap-2 text-on-surface-variant text-xs mb-1">
                 <Activity className="w-3.5 h-3.5 text-blue-400" /> Engine Health
               </div>
@@ -185,7 +185,7 @@ export default function VehicleDetailDrawer({
               </div>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-surface-container-low border border-white/10">
+            <div className="p-3.5 rounded-xl bg-[#161D30] border border-white/10">
               <div className="flex items-center gap-2 text-on-surface-variant text-xs mb-1">
                 <TrendingUp className="w-3.5 h-3.5 text-purple-400" /> ROI Yield
               </div>
@@ -220,7 +220,7 @@ export default function VehicleDetailDrawer({
         )}
 
         {/* Maintenance Audit */}
-        <div className="p-3.5 rounded-xl bg-surface-container-low border border-white/10 flex items-center justify-between text-xs">
+        <div className="p-3.5 rounded-xl bg-[#161D30] border border-white/10 flex items-center justify-between text-xs">
           <span className="text-on-surface-variant">Last Workshop Inspection</span>
           <span className="font-mono font-bold text-white">{vehicle.lastMaintenance}</span>
         </div>

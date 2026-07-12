@@ -115,32 +115,32 @@ export default function CopilotDrawer({
   ]
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-      <div className="bg-surface-container rounded-2xl border border-white/15 w-full max-w-xl h-[560px] flex flex-col shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 bg-black/45 flex items-center justify-center p-4 animate-fade-in">
+      <div className="bg-[#0E131F] text-white rounded-2xl border border-white/20 w-full max-w-xl h-[560px] flex flex-col shadow-2xl overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-white/10 bg-surface">
+        <div className="flex items-center justify-between p-4 border-b border-white/10 bg-[#131929]">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary">
               <Sparkles className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="font-bold text-on-surface text-sm">Live Operations AI Fleet Copilot</h3>
-              <p className="text-[11px] text-on-surface-variant">Real-time natural language query over 25 GPS profiles</p>
+              <h3 className="font-bold text-white text-sm">Live Operations AI Fleet Copilot</h3>
+              <p className="text-[11px] text-slate-400">Real-time natural language query over 25 GPS profiles</p>
             </div>
           </div>
-          <button onClick={onClose} className="text-on-surface-variant hover:text-white">
+          <button onClick={onClose} className="text-slate-400 hover:text-white">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Suggestions Bar */}
-        <div className="p-3 border-b border-white/10 bg-surface-container-low flex items-center gap-2 overflow-x-auto text-xs">
-          <span className="text-[10px] uppercase font-bold text-on-surface-variant shrink-0">Ask:</span>
+        <div className="p-3 border-b border-white/10 bg-[#161D30] flex items-center gap-2 overflow-x-auto text-xs">
+          <span className="text-[10px] uppercase font-bold text-slate-400 shrink-0">Ask:</span>
           {promptSuggestions.map((s, idx) => (
             <button
               key={idx}
               onClick={() => answerQuery(s)}
-              className="px-2.5 py-1 rounded-lg bg-surface hover:bg-white/10 border border-white/10 text-on-surface text-xs shrink-0 transition-all"
+              className="px-2.5 py-1 rounded-lg bg-[#1D263E] hover:bg-[#25304E] border border-white/10 text-white text-xs shrink-0 transition-all"
             >
               {s}
             </button>
@@ -158,7 +158,7 @@ export default function CopilotDrawer({
                 className={`max-w-[85%] p-3.5 rounded-2xl leading-relaxed ${
                   m.role === 'user'
                     ? 'bg-primary text-on-primary rounded-br-none font-medium'
-                    : 'bg-surface-container-low text-on-surface border border-white/10 rounded-bl-none'
+                    : 'bg-[#192138] text-white border border-white/15 rounded-bl-none'
                 }`}
               >
                 <p className="whitespace-pre-line">{m.text}</p>
@@ -187,7 +187,7 @@ export default function CopilotDrawer({
           ))}
 
           {loading && (
-            <div className="flex items-center gap-2 text-xs text-on-surface-variant animate-pulse">
+            <div className="flex items-center gap-2 text-xs text-slate-400 animate-pulse">
               <Bot className="w-4 h-4 text-primary" />
               Analyzing live fleet telemetry coordinates...
             </div>
@@ -195,13 +195,13 @@ export default function CopilotDrawer({
         </div>
 
         {/* Query Input */}
-        <form onSubmit={handleSubmit} className="p-3 border-t border-white/10 bg-surface flex gap-2">
+        <form onSubmit={handleSubmit} className="p-3 border-t border-white/10 bg-[#131929] flex gap-2">
           <input
             type="text"
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="Ask Fleet Copilot (e.g. Which vehicles are near Durgapur?)..."
-            className="flex-1 px-4 py-2.5 rounded-xl bg-surface-container-low border border-white/10 text-on-surface text-xs focus:outline-none focus:border-primary"
+            className="flex-1 px-4 py-2.5 rounded-xl bg-[#192138] border border-white/10 text-white text-xs focus:outline-none focus:border-primary"
           />
           <button
             type="submit"
