@@ -2,12 +2,12 @@ import type { Metadata } from 'next'
 
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
-import { Plus_Jakarta_Sans } from 'next/font/google'
+import { Inter } from 'next/font/google'
 
-// Initialize fonts
-const plusJakarta = Plus_Jakarta_Sans({
+// Initialize fonts per Airtable/Linear enterprise hierarchy
+const inter = Inter({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700', '800'],
+  weight: ['400', '500', '600', '700', '900'],
   display: 'swap',
 })
 
@@ -47,13 +47,13 @@ export default function RootLayout({
       suppressHydrationWarning
       className="dark scroll-smooth"
       style={{
-        '--font-heading': plusJakarta.style.fontFamily,
-        '--font-body': plusJakarta.style.fontFamily,
+        '--font-heading': inter.style.fontFamily,
+        '--font-body': inter.style.fontFamily,
       } as React.CSSProperties}
     >
       <body
         suppressHydrationWarning
-        className={`${plusJakarta.className} antialiased bg-background text-on-background overflow-x-hidden selection:bg-surface-variant selection:text-primary`}
+        className={`${inter.className} antialiased bg-background text-on-background overflow-x-hidden selection:bg-[#FF5A36]/20 selection:text-[#FF5A36]`}
       >
         <MapBackground />
         {children}

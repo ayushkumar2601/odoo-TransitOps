@@ -75,58 +75,67 @@ export default function VehiclesPage() {
     : vehicles.filter(v => v.status === filter)
 
   return (
-    <div className="min-h-screen bg-surface flex">
+    <div className="min-h-screen bg-[#09090B] text-[#FAFAFA] flex">
       <Sidebar />
 
-      <main className="flex-1 p-8 overflow-y-auto">
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-6 border-b border-white/10">
+      <main className="flex-1 md:ml-64 p-6 md:p-10 max-w-[1600px] mx-auto">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-[#27272A]">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-semibold px-2 py-0.5 bg-primary/10 text-primary rounded-full border border-primary/20 uppercase">
-                Fleet Assets
+              <span className="px-2.5 py-0.5 rounded-full bg-[#FF5A36]/15 text-[#FF5A36] border border-[#FF5A36]/30 text-[10px] font-bold uppercase tracking-wider">
+                Asset Registry
               </span>
+              <span className="text-xs text-[#A1A1AA] font-mono">• Centralized Fleet DB</span>
             </div>
-            <h1 className="text-3xl font-bold text-on-surface tracking-tight">Vehicle Asset Registry</h1>
-            <p className="text-sm text-on-surface-variant mt-1">
-              Enforces BR-001 unique registration verification across Eastern India fleet. Total: {vehicles.length} Assets.
+            <h1 className="text-3xl font-black text-[#FAFAFA] tracking-tight">
+              Commercial Fleet Registry
+            </h1>
+            <p className="text-sm text-[#A1A1AA] mt-1">
+              Manage commercial assets, load capacities, acquisition costs, and compliance documents.
             </p>
           </div>
 
-          <div className="flex items-center gap-2 mt-4 md:mt-0">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setShowImport(true)}
-              className="px-4 py-2.5 bg-surface-container-low hover:bg-white/10 border border-white/15 text-white font-semibold rounded-xl flex items-center gap-2 transition-all text-sm"
+              className="px-3.5 py-2 bg-[#18181B] border border-[#27272A] hover:border-[#3F3F46] text-[#FAFAFA] font-semibold rounded-xl flex items-center gap-2 transition-all text-xs"
             >
-              <Upload className="w-4 h-4 text-primary" />
+              <Upload className="w-4 h-4 text-[#FF5A36]" />
               Import CSV
             </button>
             <button
               onClick={() => setShowAddModal(true)}
-              className="px-4 py-2.5 bg-primary text-on-primary font-semibold rounded-xl flex items-center gap-2 hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 text-sm"
+              className="px-4 py-2 bg-[#FF5A36] text-white font-bold rounded-xl flex items-center gap-2 hover:bg-[#D84315] transition-all shadow-md text-xs"
             >
               <Plus className="w-4 h-4" />
-              Register New Vehicle
+              Register New Asset
             </button>
           </div>
         </div>
 
-        <CSVImportModal
-          isOpen={showImport}
-          category="Vehicles"
-          onClose={() => setShowImport(false)}
-          onImported={() => loadVehicles()}
-        />
+        {err && (
+          <div className="mb-6 p-4 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-4 h-4" />
+              <span>{err}</span>
+            </div>
+            <button onClick={() => setErr('')}>
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        )}
 
-        {/* Status Filter Bar */}
-        <div className="flex gap-2 mb-6">
-          {(['All', 'Available', 'On Trip', 'In Shop', 'Retired'] as const).map((st) => (
+        {/* Status Filters */}
+        <div className="flex flex-wrap items-center gap-2 mb-8">
+          {['All', 'Available', 'On Trip', 'In Shop', 'Retired'].map((st) => (
             <button
               key={st}
               onClick={() => setFilter(st)}
-              className={`px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all ${
+              className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${
                 filter === st
-                  ? 'bg-primary/20 text-primary border-primary/40'
-                  : 'bg-surface-container-low text-on-surface-variant border-white/10 hover:border-white/20'
+                  ? 'bg-[#FF5A36] text-white shadow-sm'
+                  : 'bg-[#111113] border border-[#27272A] text-[#A1A1AA] hover:text-[#FAFAFA]'
               }`}
             >
               {st} ({st === 'All' ? vehicles.length : vehicles.filter(v => v.status === st).length})
@@ -140,15 +149,15 @@ export default function VehiclesPage() {
             <div
               key={v.id}
               onClick={() => setSelectedVehicle(v)}
-              className="bg-surface-container-low border border-white/10 rounded-2xl p-5 flex flex-col justify-between hover:border-primary/50 transition-all shadow-md group cursor-pointer"
+              className="bg-[#111113] border border-[#27272A] rounded-2xl p-6 flex flex-col justify-between hover:border-[#FF5A36]/60 transition-all shadow-sm group cursor-pointer"
             >
               <div>
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <span className="font-mono font-bold text-primary text-base tracking-wide group-hover:text-purple-400 transition-colors">
+                    <span className="font-mono font-bold text-[#FF5A36] text-base tracking-wide group-hover:text-[#FF7A59] transition-colors">
                       {v.registrationNumber}
                     </span>
-                    <h3 className="text-sm font-bold text-on-surface mt-0.5">{v.vehicleName}</h3>
+                    <h3 className="text-sm font-bold text-[#FAFAFA] mt-0.5">{v.vehicleName}</h3>
                   </div>
                   <span
                     className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${

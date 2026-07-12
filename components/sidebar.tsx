@@ -21,125 +21,166 @@ import {
   FileSpreadsheet,
   Navigation,
   Radio,
-  Cpu,
   MonitorPlay,
   FileBarChart,
   Leaf,
-  RotateCcw
+  RotateCcw,
+  ChevronDown,
+  ChevronRight,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Sparkles
 } from 'lucide-react'
 
 interface NavItem {
   label: string
   href: string
   icon: React.ReactNode
-  roles: string[] // Allowed roles
+  roles: string[]
 }
 
-const allNavItems: NavItem[] = [
+interface NavGroup {
+  title: string
+  items: NavItem[]
+}
+
+const navGroups: NavGroup[] = [
   {
-    label: 'Dashboard',
-    href: '/dashboard',
-    icon: <LayoutDashboard className="w-5 h-5" />,
-    roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Financial Analyst', 'Driver', 'Admin']
+    title: 'Overview',
+    items: [
+      {
+        label: 'Dashboard',
+        href: '/dashboard',
+        icon: <LayoutDashboard className="w-4 h-4" />,
+        roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Financial Analyst', 'Driver', 'Admin'],
+      },
+      {
+        label: 'Operations War Room',
+        href: '/command-center',
+        icon: <MonitorPlay className="w-4 h-4 text-[#FF5A36]" />,
+        roles: ['Fleet Manager', 'Admin'],
+      },
+    ],
   },
   {
-    label: 'Live Operations',
-    href: '/live-operations',
-    icon: <Radio className="w-5 h-5 text-emerald-400 animate-pulse" />,
-    roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Admin']
+    title: 'Operations',
+    items: [
+      {
+        label: 'Live Fleet Map',
+        href: '/live-operations',
+        icon: <Radio className="w-4 h-4 text-emerald-400 animate-pulse" />,
+        roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Admin'],
+      },
+      {
+        label: 'Trip Dispatching',
+        href: '/trips',
+        icon: <MapPin className="w-4 h-4" />,
+        roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Admin'],
+      },
+      {
+        label: 'Route Playback',
+        href: '/replay',
+        icon: <RotateCcw className="w-4 h-4" />,
+        roles: ['Fleet Manager', 'Dispatcher', 'Admin'],
+      },
+    ],
   },
   {
-    label: 'Vehicles Registry',
-    href: '/vehicles',
-    icon: <Truck className="w-5 h-5" />,
-    roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Financial Analyst', 'Admin']
+    title: 'Fleet',
+    items: [
+      {
+        label: 'Vehicle Registry',
+        href: '/vehicles',
+        icon: <Truck className="w-4 h-4" />,
+        roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Financial Analyst', 'Admin'],
+      },
+      {
+        label: 'Vehicle Documents',
+        href: '/vehicle-documents',
+        icon: <FileText className="w-4 h-4" />,
+        roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Financial Analyst', 'Admin'],
+      },
+      {
+        label: 'Driver Governance',
+        href: '/drivers',
+        icon: <Users className="w-4 h-4" />,
+        roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Admin'],
+      },
+      {
+        label: 'Driver Portal',
+        href: '/driver-portal',
+        icon: <Navigation className="w-4 h-4" />,
+        roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Driver', 'Admin'],
+      },
+    ],
   },
   {
-    label: 'Vehicle Documents',
-    href: '/vehicle-documents',
-    icon: <FileText className="w-5 h-5" />,
-    roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Financial Analyst', 'Admin']
+    title: 'Maintenance',
+    items: [
+      {
+        label: 'Workshop Control',
+        href: '/maintenance',
+        icon: <Wrench className="w-4 h-4" />,
+        roles: ['Fleet Manager', 'Admin'],
+      },
+      {
+        label: 'Fuel & Expenses',
+        href: '/expenses',
+        icon: <Receipt className="w-4 h-4" />,
+        roles: ['Fleet Manager', 'Financial Analyst', 'Admin'],
+      },
+    ],
   },
   {
-    label: 'Driver Governance',
-    href: '/drivers',
-    icon: <Users className="w-5 h-5" />,
-    roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Admin']
+    title: 'Analytics',
+    items: [
+      {
+        label: 'BI Analytics & ROI',
+        href: '/analytics',
+        icon: <BarChart3 className="w-4 h-4" />,
+        roles: ['Fleet Manager', 'Financial Analyst', 'Admin'],
+      },
+      {
+        label: 'Executive Briefing',
+        href: '/briefing',
+        icon: <FileBarChart className="w-4 h-4" />,
+        roles: ['Fleet Manager', 'Financial Analyst', 'Admin'],
+      },
+      {
+        label: 'Sustainability ESG',
+        href: '/sustainability',
+        icon: <Leaf className="w-4 h-4 text-emerald-400" />,
+        roles: ['Fleet Manager', 'Financial Analyst', 'Admin'],
+      },
+    ],
   },
   {
-    label: 'Driver Portal',
-    href: '/driver-portal',
-    icon: <Navigation className="w-5 h-5" />,
-    roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Driver', 'Admin']
+    title: 'Administration',
+    items: [
+      {
+        label: 'Audit Log',
+        href: '/audit-log',
+        icon: <FileSpreadsheet className="w-4 h-4" />,
+        roles: ['Fleet Manager', 'Safety Officer', 'Admin'],
+      },
+      {
+        label: 'Email Reminders',
+        href: '/emails',
+        icon: <Mail className="w-4 h-4" />,
+        roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Financial Analyst', 'Admin'],
+      },
+    ],
   },
-  {
-    label: 'Trip Dispatching',
-    href: '/trips',
-    icon: <MapPin className="w-5 h-5" />,
-    roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Admin']
-  },
-  {
-    label: 'Workshop & Maintenance',
-    href: '/maintenance',
-    icon: <Wrench className="w-5 h-5" />,
-    roles: ['Fleet Manager', 'Admin']
-  },
-  {
-    label: 'Fuel & Expenses',
-    href: '/expenses',
-    icon: <Receipt className="w-5 h-5" />,
-    roles: ['Fleet Manager', 'Financial Analyst', 'Admin']
-  },
-  {
-    label: 'Email Reminders',
-    href: '/emails',
-    icon: <Mail className="w-5 h-5" />,
-    roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Financial Analyst', 'Admin']
-  },
-  {
-    label: 'BI Analytics & ROI',
-    href: '/analytics',
-    icon: <BarChart3 className="w-5 h-5" />,
-    roles: ['Fleet Manager', 'Financial Analyst', 'Admin']
-  },
-  {
-    label: 'Enterprise Audit Log',
-    href: '/audit-log',
-    icon: <FileSpreadsheet className="w-5 h-5" />,
-    roles: ['Fleet Manager', 'Safety Officer', 'Admin']
-  },
-  {
-    label: 'War Room',
-    href: '/command-center',
-    icon: <MonitorPlay className="w-5 h-5 text-rose-400" />,
-    roles: ['Fleet Manager', 'Admin']
-  },
-  {
-    label: 'Fleet Replay',
-    href: '/replay',
-    icon: <RotateCcw className="w-5 h-5" />,
-    roles: ['Fleet Manager', 'Dispatcher', 'Admin']
-  },
-  {
-    label: 'Daily Briefing',
-    href: '/briefing',
-    icon: <FileBarChart className="w-5 h-5" />,
-    roles: ['Fleet Manager', 'Financial Analyst', 'Admin']
-  },
-  {
-    label: 'Sustainability',
-    href: '/sustainability',
-    icon: <Leaf className="w-5 h-5 text-emerald-400" />,
-    roles: ['Fleet Manager', 'Financial Analyst', 'Admin']
-  }
 ]
 
 export const Sidebar: React.FC = () => {
   const pathname = usePathname()
   const router = useRouter()
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpenMobile, setIsOpenMobile] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(false)
   const [userRole, setUserRole] = useState('Fleet Manager')
   const [userName, setUserName] = useState('Aditya Banerjee')
+  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({})
 
   useEffect(() => {
     const role = localStorage.getItem('user_role') || 'Fleet Manager'
@@ -148,7 +189,8 @@ export const Sidebar: React.FC = () => {
     setUserName(name)
   }, [])
 
-  const isActive = (href: string) => pathname === href || (href !== '/dashboard' && pathname.startsWith(href))
+  const isActive = (href: string) =>
+    pathname === href || (href !== '/dashboard' && pathname.startsWith(href))
 
   const handleSignOut = () => {
     localStorage.removeItem('user_role')
@@ -157,10 +199,12 @@ export const Sidebar: React.FC = () => {
     router.push('/signin')
   }
 
-  // Filter navigation links based on user role
-  const visibleNavItems = allNavItems.filter(item =>
-    item.roles.includes(userRole) || userRole === 'Admin'
-  )
+  const toggleGroup = (title: string) => {
+    setCollapsedGroups((prev) => ({
+      ...prev,
+      [title]: !prev[title],
+    }))
+  }
 
   const getRoleBadgeStyle = (role: string) => {
     switch (role) {
@@ -173,101 +217,170 @@ export const Sidebar: React.FC = () => {
       case 'Admin':
         return 'bg-rose-500/15 text-rose-400 border-rose-500/30'
       default:
-        return 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+        return 'bg-[#FF5A36]/15 text-[#FF5A36] border-[#FF5A36]/30'
     }
   }
 
   return (
     <>
-      {/* Mobile toggle */}
+      {/* Mobile hamburger button */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-4 left-4 z-50 md:hidden bg-surface-container p-2 border border-white/10 hover:border-white/20 transition-colors rounded-lg"
+        onClick={() => setIsOpenMobile(!isOpenMobile)}
+        className="fixed top-4 left-4 z-50 md:hidden bg-[#111113] p-2.5 border border-[#27272A] hover:border-[#3F3F46] transition-colors rounded-xl shadow-lg"
+        aria-label="Toggle Navigation"
       >
-        {isOpen ? (
-          <X className="w-5 h-5 text-on-surface" />
+        {isOpenMobile ? (
+          <X className="w-5 h-5 text-[#FAFAFA]" />
         ) : (
-          <Menu className="w-5 h-5 text-on-surface" />
+          <Menu className="w-5 h-5 text-[#FAFAFA]" />
         )}
       </button>
 
-      {/* Overlay */}
-      {isOpen && (
+      {/* Mobile backdrop */}
+      {isOpenMobile && (
         <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden"
-          onClick={() => setIsOpen(false)}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+          onClick={() => setIsOpenMobile(false)}
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar container */}
       <aside
-        className={`fixed left-0 top-0 h-screen w-64 bg-surface-container-low border-r border-white/10 flex flex-col transition-transform duration-300 z-40 md:translate-x-0 ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`fixed left-0 top-0 h-screen bg-[#111113] border-r border-[#27272A] flex flex-col transition-all duration-300 z-40 md:translate-x-0 ${
+          isOpenMobile ? 'translate-x-0 w-64' : '-translate-x-full'
+        } ${isCollapsed ? 'md:w-20' : 'md:w-64'}`}
       >
-        {/* Logo */}
-        <div className="p-6 border-b border-white/10">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-primary/20 border border-primary/40 flex items-center justify-center text-primary shadow-inner">
+        {/* Header Logo */}
+        <div className="p-4 border-b border-[#27272A] flex items-center justify-between">
+          <Link href="/dashboard" className="flex items-center gap-3 overflow-hidden">
+            <div className="w-9 h-9 shrink-0 rounded-xl bg-[#FF5A36] text-white flex items-center justify-center font-bold shadow-lg shadow-[#FF5A36]/20">
               <Truck className="w-5 h-5" />
             </div>
-            <div>
-              <h1 className="text-xl font-bold text-on-surface tracking-tight">TransitOps</h1>
-              <p className="text-[11px] text-primary font-mono mt-0.5">Fleet Operations OS</p>
+            {!isCollapsed && (
+              <div className="flex flex-col">
+                <span className="font-extrabold text-base text-[#FAFAFA] tracking-tight leading-tight">
+                  TransitOps
+                </span>
+                <span className="text-[10px] text-[#A1A1AA] uppercase font-semibold tracking-wider">
+                  Enterprise OS
+                </span>
+              </div>
+            )}
+          </Link>
+
+          {/* Collapsible toggle (Desktop only) */}
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="hidden md:flex p-1.5 rounded-lg text-[#A1A1AA] hover:text-[#FAFAFA] hover:bg-[#18181B] transition-colors"
+            title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+          >
+            {isCollapsed ? (
+              <PanelLeftOpen className="w-4 h-4" />
+            ) : (
+              <PanelLeftClose className="w-4 h-4" />
+            )}
+          </button>
+        </div>
+
+        {/* User Role Profile */}
+        {!isCollapsed && (
+          <div className="mx-3 my-3 p-3 rounded-xl bg-[#18181B] border border-[#27272A] space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#A1A1AA] flex items-center gap-1">
+                <ShieldCheck className="w-3 h-3 text-[#FF5A36]" />
+                Workspace Role
+              </span>
+              <span
+                className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${getRoleBadgeStyle(
+                  userRole
+                )}`}
+              >
+                {userRole}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <UserCheck className="w-3.5 h-3.5 text-[#A1A1AA]" />
+              <span className="text-xs font-semibold text-[#FAFAFA] truncate">
+                {userName}
+              </span>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* User Profile & Role Badge */}
-        <div className="px-5 py-3.5 border-b border-white/10 bg-white/5 space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase text-on-surface-variant flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-primary" />
-              Role Profile
-            </span>
-            <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${getRoleBadgeStyle(userRole)}`}>
-              {userRole}
-            </span>
-          </div>
-          <div className="flex items-center gap-2 pt-0.5">
-            <UserCheck className="w-4 h-4 text-on-surface-variant shrink-0" />
-            <span className="text-xs font-semibold text-on-surface truncate">{userName}</span>
-          </div>
-        </div>
+        {/* Navigation list */}
+        <nav className="flex-1 px-3 py-2 space-y-4 overflow-y-auto">
+          {navGroups.map((group) => {
+            const items = group.items.filter(
+              (item) => item.roles.includes(userRole) || userRole === 'Admin'
+            )
+            if (items.length === 0) return null
 
-        {/* Navigation */}
-        <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
-          {visibleNavItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setIsOpen(false)}
-              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all duration-200 ${
-                isActive(item.href)
-                  ? 'bg-primary/20 border border-primary/40 text-primary font-semibold shadow-sm'
-                  : 'text-on-surface-variant hover:bg-white/5 hover:text-on-surface border border-transparent'
-              }`}
-            >
-              {item.icon}
-              <span className="text-sm">{item.label}</span>
-            </Link>
-          ))}
+            const isGroupCollapsed = collapsedGroups[group.title]
+
+            return (
+              <div key={group.title} className="space-y-1">
+                {/* Group Title header */}
+                {!isCollapsed ? (
+                  <button
+                    onClick={() => toggleGroup(group.title)}
+                    className="w-full flex items-center justify-between px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#64748B] hover:text-[#A1A1AA] transition-colors"
+                  >
+                    <span>{group.title}</span>
+                    {isGroupCollapsed ? (
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    ) : (
+                      <ChevronDown className="w-3.5 h-3.5" />
+                    )}
+                  </button>
+                ) : (
+                  <div className="border-t border-[#27272A]/60 my-2" />
+                )}
+
+                {/* Nav Items */}
+                {!isGroupCollapsed &&
+                  items.map((item) => {
+                    const active = isActive(item.href)
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setIsOpenMobile(false)}
+                        title={isCollapsed ? item.label : undefined}
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 ${
+                          active
+                            ? 'bg-[#FF5A36]/15 text-[#FF5A36] border border-[#FF5A36]/30 font-semibold shadow-sm'
+                            : 'text-[#A1A1AA] hover:text-[#FAFAFA] hover:bg-[#18181B] border border-transparent'
+                        }`}
+                      >
+                        <span className="shrink-0">{item.icon}</span>
+                        {!isCollapsed && <span className="text-sm truncate">{item.label}</span>}
+                      </Link>
+                    )
+                  })}
+              </div>
+            )
+          })}
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t border-white/10">
+        <div className="p-3 border-t border-[#27272A]">
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center gap-3 px-3.5 py-2.5 text-on-surface-variant hover:bg-rose-500/10 hover:text-rose-400 rounded-xl transition-all duration-200 text-sm font-medium"
+            title="Switch Role / Sign Out"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#A1A1AA] hover:bg-rose-500/10 hover:text-rose-400 transition-all text-xs font-semibold"
           >
-            <LogOut className="w-4 h-4" />
-            <span>Switch Role / Sign Out</span>
+            <LogOut className="w-4 h-4 shrink-0" />
+            {!isCollapsed && <span>Switch Role / Sign Out</span>}
           </button>
         </div>
       </aside>
 
       {/* Spacer for desktop */}
-      <div className="hidden md:block w-64 shrink-0" />
+      <div
+        className={`hidden md:block shrink-0 transition-all duration-300 ${
+          isCollapsed ? 'w-20' : 'w-64'
+        }`}
+      />
     </>
   )
 }
