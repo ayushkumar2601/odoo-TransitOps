@@ -5,6 +5,8 @@ import { MapContainer, TileLayer, Marker, Popup, Circle, Polyline, useMap } from
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { VehicleTelemetry, EASTERN_INDIA_HUBS } from '@/lib/live-tracking'
+import { useTheme } from '@/lib/theme/theme-context'
+import { getMapTileUrl } from '@/lib/theme/theme-utils'
 
 interface FleetMapProps {
   vehicles: VehicleTelemetry[]
@@ -99,8 +101,10 @@ export default function FleetMap({
   showRoutes,
   showHeatmap = false
 }: FleetMapProps) {
+  const { resolvedTheme } = useTheme()
+
   return (
-    <div className="w-full h-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl relative">
+    <div className="w-full h-full rounded-2xl overflow-hidden border border-[var(--border)] shadow-2xl relative">
       <MapContainer
         center={[23.6, 86.8]}
         zoom={7}
@@ -108,8 +112,8 @@ export default function FleetMap({
         className="w-full h-full z-10"
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | TransitOps Control Tower'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://carto.com/">CARTO</a> contributors | TransitOps Control Tower'
+          url={getMapTileUrl(resolvedTheme)}
         />
 
         <AutoCenterMap selectedVehicle={selectedVehicle} />

@@ -246,22 +246,22 @@ export const Sidebar: React.FC = () => {
 
       {/* Sidebar container */}
       <aside
-        className={`fixed left-0 top-0 h-screen bg-[#09090B] border-r border-[#27272A]/80 flex flex-col transition-all duration-300 z-40 md:translate-x-0 ${
+        className={`fixed left-0 top-0 h-screen bg-white dark:bg-[#0B0E13] border-r border-[var(--border)] flex flex-col transition-all duration-300 z-40 md:translate-x-0 ${
           isOpenMobile ? 'translate-x-0 w-60' : '-translate-x-full'
         } ${isCollapsed ? 'md:w-20' : 'md:w-60'}`}
       >
         {/* Header Logo */}
-        <div className="p-4 border-b border-[#27272A] flex items-center justify-between">
+        <div className="p-4 border-b border-[var(--border)] flex items-center justify-between">
           <Link href="/dashboard" className="flex items-center gap-3 overflow-hidden">
-            <div className="w-9 h-9 shrink-0 rounded-xl bg-[#FF5A36] text-white flex items-center justify-center font-bold shadow-lg shadow-[#FF5A36]/20">
+            <div className="w-9 h-9 shrink-0 rounded-xl bg-[#FF6A3D] text-white flex items-center justify-center font-bold shadow-lg shadow-[#FF6A3D]/20">
               <Truck className="w-5 h-5" />
             </div>
             {!isCollapsed && (
               <div className="flex flex-col">
-                <span className="font-extrabold text-base text-[#FAFAFA] tracking-tight leading-tight">
+                <span className="font-extrabold text-base text-[var(--text-primary)] tracking-tight leading-tight">
                   TransitOps
                 </span>
-                <span className="text-[10px] text-[#A1A1AA] uppercase font-semibold tracking-wider">
+                <span className="text-[10px] text-[var(--text-secondary)] uppercase font-semibold tracking-wider">
                   Enterprise OS
                 </span>
               </div>
@@ -271,7 +271,7 @@ export const Sidebar: React.FC = () => {
           {/* Collapsible toggle (Desktop only) */}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="hidden md:flex p-1.5 rounded-lg text-[#A1A1AA] hover:text-[#FAFAFA] hover:bg-[#18181B] transition-colors"
+            className="hidden md:flex p-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-elevated)] transition-colors"
             title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
           >
             {isCollapsed ? (
@@ -284,10 +284,10 @@ export const Sidebar: React.FC = () => {
 
         {/* User Role Profile */}
         {!isCollapsed && (
-          <div className="mx-3 my-3 p-3 rounded-xl bg-[#18181B] border border-[#27272A] space-y-2">
+          <div className="mx-3 my-3 p-3 rounded-xl bg-[var(--surface-elevated)] border border-[var(--border)] space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#A1A1AA] flex items-center gap-1">
-                <ShieldCheck className="w-3 h-3 text-[#FF5A36]" />
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-secondary)] flex items-center gap-1">
+                <ShieldCheck className="w-3 h-3 text-[#FF6A3D]" />
                 Workspace Role
               </span>
               <span
@@ -299,8 +299,8 @@ export const Sidebar: React.FC = () => {
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <UserCheck className="w-3.5 h-3.5 text-[#A1A1AA]" />
-              <span className="text-xs font-semibold text-[#FAFAFA] truncate">
+              <UserCheck className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+              <span className="text-xs font-semibold text-[var(--text-primary)] truncate">
                 {userName}
               </span>
             </div>
@@ -323,7 +323,7 @@ export const Sidebar: React.FC = () => {
                 {!isCollapsed ? (
                   <button
                     onClick={() => toggleGroup(group.title)}
-                    className="w-full flex items-center justify-between px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#64748B] hover:text-[#A1A1AA] transition-colors"
+                    className="w-full flex items-center justify-between px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
                   >
                     <span>{group.title}</span>
                     {isGroupCollapsed ? (
@@ -333,7 +333,7 @@ export const Sidebar: React.FC = () => {
                     )}
                   </button>
                 ) : (
-                  <div className="border-t border-[#27272A]/60 my-2" />
+                  <div className="border-t border-[var(--border)]/60 my-2" />
                 )}
 
                 {/* Nav Items */}
@@ -348,8 +348,8 @@ export const Sidebar: React.FC = () => {
                         title={isCollapsed ? item.label : undefined}
                         className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 ${
                           active
-                            ? 'bg-[#FF5A36]/15 text-[#FF5A36] border border-[#FF5A36]/30 font-semibold shadow-sm'
-                            : 'text-[#A1A1AA] hover:text-[#FAFAFA] hover:bg-[#18181B] border border-transparent'
+                            ? 'bg-[#FF6A3D]/15 text-[#FF6A3D] border border-[#FF6A3D]/30 font-semibold shadow-sm'
+                            : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-elevated)] border border-transparent'
                         }`}
                       >
                         <span className="shrink-0">{item.icon}</span>
@@ -363,11 +363,11 @@ export const Sidebar: React.FC = () => {
         </nav>
 
         {/* Footer */}
-        <div className="p-3 border-t border-[#27272A]">
+        <div className="p-3 border-t border-[var(--border)]">
           <button
             onClick={handleSignOut}
             title="Switch Role / Sign Out"
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#A1A1AA] hover:bg-rose-500/10 hover:text-rose-400 transition-all text-xs font-semibold"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[var(--text-secondary)] hover:bg-rose-500/10 hover:text-rose-500 transition-all text-xs font-semibold"
           >
             <LogOut className="w-4 h-4 shrink-0" />
             {!isCollapsed && <span>Switch Role / Sign Out</span>}

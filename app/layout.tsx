@@ -35,6 +35,7 @@ export const metadata: Metadata = {
 }
 
 import { MapBackground } from '@/components/map-background'
+import { ThemeProvider } from '@/lib/theme/theme-provider'
 
 export default function RootLayout({
   children,
@@ -55,8 +56,10 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${inter.className} antialiased bg-background text-on-background overflow-x-hidden selection:bg-[#FF5A36]/20 selection:text-[#FF5A36]`}
       >
-        <MapBackground />
-        {children}
+        <ThemeProvider defaultTheme="system">
+          <MapBackground />
+          {children}
+        </ThemeProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

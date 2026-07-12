@@ -14,6 +14,7 @@ import {
   YAxis,
   Tooltip
 } from 'recharts'
+import { useTheme } from '@/lib/theme/theme-context'
 
 const tripTrendData = [
   { month: 'Feb', trips: 142, onTime: 98.2 },
@@ -34,14 +35,14 @@ const costTrendData = [
 ]
 
 const driverRiskData = [
-  { cohort: '90-100 (Optimal)', count: 24, fill: '#22C55E' },
+  { cohort: '90-100 (Optimal)', count: 24, fill: '#10B981' },
   { cohort: '80-89 (Standard)', count: 8, fill: '#3B82F6' },
   { cohort: '70-79 (Monitor)', count: 2, fill: '#F59E0B' },
   { cohort: '<70 (Critical Risk)', count: 1, fill: '#EF4444' }
 ]
 
 const healthDistributionData = [
-  { name: 'Excellent (A+)', value: 16, color: '#22C55E' },
+  { name: 'Excellent (A+)', value: 16, color: '#10B981' },
   { name: 'Good (A)', value: 6, color: '#3B82F6' },
   { name: 'Average (B)', value: 2, color: '#F59E0B' },
   { name: 'Workshop Lock (BR-012)', value: 2, color: '#EF4444' }
@@ -50,12 +51,12 @@ const healthDistributionData = [
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-[#18181B] border border-white/10 rounded-xl p-3 shadow-2xl text-xs">
-        <p className="font-bold text-[#FAFAFA] mb-1">{label}</p>
+      <div className="bg-[var(--surface-card)] border border-[var(--border)] rounded-xl p-3 shadow-xl text-xs">
+        <p className="font-bold text-[var(--text-primary)] mb-1">{label}</p>
         {payload.map((entry: any, index: number) => (
           <div key={index} className="flex items-center justify-between gap-4">
             <span style={{ color: entry.color || entry.fill }}>{entry.name}:</span>
-            <span className="font-mono font-bold text-[#FAFAFA]">
+            <span className="font-mono font-bold text-[var(--text-primary)]">
               {entry.value} {entry.name.includes('fuel') || entry.name.includes('workshop') ? 'L INR' : ''}
             </span>
           </div>
@@ -67,24 +68,27 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 }
 
 export function ActiveTripTrendChart() {
+  const { resolvedTheme } = useTheme()
+  const axisColor = resolvedTheme === 'light' ? '#6B7280' : '#64748B'
+
   return (
     <div className="h-48 w-full mt-4">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={tripTrendData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
           <defs>
             <linearGradient id="tripGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#FF5A36" stopOpacity={0.35} />
-              <stop offset="95%" stopColor="#FF5A36" stopOpacity={0.0} />
+              <stop offset="5%" stopColor="#FF6A3D" stopOpacity={0.35} />
+              <stop offset="95%" stopColor="#FF6A3D" stopOpacity={0.0} />
             </linearGradient>
           </defs>
-          <XAxis dataKey="month" stroke="#64748B" fontSize={11} tickLine={false} axisLine={false} />
-          <YAxis stroke="#64748B" fontSize={11} tickLine={false} axisLine={false} />
+          <XAxis dataKey="month" stroke={axisColor} fontSize={11} tickLine={false} axisLine={false} />
+          <YAxis stroke={axisColor} fontSize={11} tickLine={false} axisLine={false} />
           <Tooltip content={<CustomTooltip />} />
           <Area
             type="monotone"
             dataKey="trips"
             name="Dispatches"
-            stroke="#FF5A36"
+            stroke="#FF6A3D"
             strokeWidth={2.5}
             fillOpacity={1}
             fill="url(#tripGradient)"
@@ -96,14 +100,17 @@ export function ActiveTripTrendChart() {
 }
 
 export function MonthlyCostTrendChart() {
+  const { resolvedTheme } = useTheme()
+  const axisColor = resolvedTheme === 'light' ? '#6B7280' : '#64748B'
+
   return (
     <div className="h-48 w-full mt-4">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={costTrendData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-          <XAxis dataKey="month" stroke="#64748B" fontSize={11} tickLine={false} axisLine={false} />
-          <YAxis stroke="#64748B" fontSize={11} tickLine={false} axisLine={false} />
+          <XAxis dataKey="month" stroke={axisColor} fontSize={11} tickLine={false} axisLine={false} />
+          <YAxis stroke={axisColor} fontSize={11} tickLine={false} axisLine={false} />
           <Tooltip content={<CustomTooltip />} />
-          <Bar dataKey="fuel" name="fuel (L INR)" fill="#FF5A36" radius={[4, 4, 0, 0]} barSize={16} />
+          <Bar dataKey="fuel" name="fuel (L INR)" fill="#FF6A3D" radius={[4, 4, 0, 0]} barSize={16} />
           <Bar dataKey="workshop" name="workshop (L INR)" fill="#3B82F6" radius={[4, 4, 0, 0]} barSize={16} />
         </BarChart>
       </ResponsiveContainer>
@@ -112,12 +119,15 @@ export function MonthlyCostTrendChart() {
 }
 
 export function DriverRiskStackedChart() {
+  const { resolvedTheme } = useTheme()
+  const axisColor = resolvedTheme === 'light' ? '#6B7280' : '#64748B'
+
   return (
     <div className="h-48 w-full mt-4">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={driverRiskData} layout="vertical" margin={{ top: 5, right: 15, left: 35, bottom: 0 }}>
-          <XAxis type="number" stroke="#64748B" fontSize={11} tickLine={false} axisLine={false} />
-          <YAxis dataKey="cohort" type="category" stroke="#A1A1AA" fontSize={10} tickLine={false} axisLine={false} />
+          <XAxis type="number" stroke={axisColor} fontSize={11} tickLine={false} axisLine={false} />
+          <YAxis dataKey="cohort" type="category" stroke={axisColor} fontSize={10} tickLine={false} axisLine={false} />
           <Tooltip content={<CustomTooltip />} />
           <Bar dataKey="count" name="Drivers" radius={[0, 4, 4, 0]} barSize={14}>
             {driverRiskData.map((entry, index) => (
@@ -156,6 +166,8 @@ export function FleetHealthDonutChart() {
 }
 
 export function CircularUtilizationChart({ percentage }: { percentage: number }) {
+  const { resolvedTheme } = useTheme()
+  const trackStroke = resolvedTheme === 'light' ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.08)'
   const radius = 54
   const circumference = 2 * Math.PI * radius
   const strokeDashoffset = circumference - (percentage / 100) * circumference
@@ -168,7 +180,7 @@ export function CircularUtilizationChart({ percentage }: { percentage: number })
           cx="64"
           cy="64"
           r={radius}
-          stroke="rgba(255,255,255,0.08)"
+          stroke={trackStroke}
           strokeWidth="12"
           fill="transparent"
         />
@@ -177,7 +189,7 @@ export function CircularUtilizationChart({ percentage }: { percentage: number })
           cx="64"
           cy="64"
           r={radius}
-          stroke="#FF5A36"
+          stroke="#FF6A3D"
           strokeWidth="12"
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
@@ -187,8 +199,8 @@ export function CircularUtilizationChart({ percentage }: { percentage: number })
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-2xl font-extrabold text-[#FAFAFA] tracking-tight">{percentage}%</span>
-        <span className="text-[10px] font-bold text-[#A1A1AA] uppercase tracking-wider">Active Rate</span>
+        <span className="text-2xl font-extrabold text-[var(--text-primary)] tracking-tight">{percentage}%</span>
+        <span className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">Active Rate</span>
       </div>
     </div>
   )
