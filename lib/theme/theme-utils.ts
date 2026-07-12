@@ -27,11 +27,7 @@ export function getChartTokens(resolvedTheme: ResolvedTheme): ThemeChartTokens {
   }
 }
 
-export function getMapTileUrl(resolvedTheme: ResolvedTheme): string {
-  if (resolvedTheme === 'light') {
-    // CartoDB Positron Light Mode Map Tiles
-    return 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
-  }
-  // CartoDB Dark Matter Dark Mode Map Tiles
-  return 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+export function getMapTileUrl(_resolvedTheme?: ResolvedTheme): string {
+  // Always return CartoDB Voyager Light Mode Map Tiles for clear visibility regardless of UI theme
+  return 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
 }

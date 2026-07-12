@@ -104,12 +104,12 @@ export default function FleetMap({
   const { resolvedTheme } = useTheme()
 
   return (
-    <div className="w-full h-full rounded-2xl overflow-hidden border border-[var(--border)] shadow-2xl relative">
+    <div className="w-full h-full rounded-2xl overflow-hidden border border-[var(--border)] shadow-2xl relative bg-[#f8fafc]">
       <MapContainer
         center={[23.6, 86.8]}
         zoom={7}
         scrollWheelZoom={true}
-        className="w-full h-full z-10"
+        className="w-full h-full z-10 bg-[#f8fafc]"
       >
         <TileLayer
           attribution='&copy; <a href="https://carto.com/">CARTO</a> contributors | TransitOps Control Tower'
