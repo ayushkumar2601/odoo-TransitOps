@@ -103,3 +103,58 @@ The platform has been certified via Next.js Turbopack production compilation:
 - **Build Status**: Successful (`npm run build`)
 - **Type Safety**: Fully typed TypeScript interfaces across all components and data layers.
 - **Styling**: Responsive dark-mode enterprise UI built with modern glassmorphism and curated color palettes.
+
+---
+
+## 6. Phase 1.7 — Live Fleet Operations Command Center (`/live-operations`)
+
+Phase 1.7 introduces a professional-grade real-time Fleet Operations Command Center modeled after enterprise telematics leaders (Samsara, Fleetio, Motive, Tata Fleet Edge, GPSWOX, MapmyIndia).
+
+### 6.1 Live Fleet Operations Architecture & Open-Source Stack
+- **Mapping Engine**: Built exclusively with free, open-source **React Leaflet v4** and **OpenStreetMap (OSM)** tiles—eliminating paid API dependencies while delivering high-performance pan, zoom, custom SVG marker icons, and vector overlays.
+- **Client-Side Dynamic SSR Exclusion**: Loaded via Next.js dynamic imports (`ssr: false`) to ensure zero window reference mismatches during server pre-rendering.
+
+```text
+  +---------------------------------------------------------------------------------+
+  |                 Phase 1.7 Live Operations Command Center                        |
+  |                        (/app/live-operations/page.tsx)                          |
+  +-----------------------------------------+---------------------------------------+
+  |  70% Left Panel: OpenStreetMap Leaflet  |  30% Right Panel: Asset Telemetry     |
+  |  - Custom Status Markers (Color Coded)  |  - Searchable/Filterable 25-Asset     |
+  |  - 10 Active Route Polylines            |    Live Telemetry List                |
+  |  - 5 Regional Hub Geofence Circles      |  - Slide-Over Detailed Drawer         |
+  +-----------------------------------------+---------------------------------------+
+                                            |
+                      +---------------------+---------------------+
+                      |                                           |
+                      v                                           v
+       [ GPS Simulation Engine ]                   [ Floating AI Copilot ]
+      lib/live-tracking/simulator.ts          components/live-operations/copilot-drawer.tsx
+      - 3-Second Interval Ticks               - Natural Language Queries over
+      - Haversine Distance & ETA                25 Live GPS Coordinates & Alerts
+      - 5 Judge One-Click Scenarios
+```
+
+### 6.2 GPS Simulation Engine & Telemetry Layer (`lib/live-tracking`)
+- **25 Enterprise Vehicle GPS Profiles**: Seeded with real latitude/longitude coordinates across major Eastern India logistics corridors (Kolkata, Howrah, Durgapur, Asansol, Siliguri, Kharagpur, Ranchi, Jamshedpur, Patna, Bhubaneswar).
+- **High-Precision 3-Second Ticks**: `simulateTick()` updates latitude, longitude, heading, speed, distance remaining, and ETA for all vehicles with status `Moving` along their route polylines (`TRP-101` through `TRP-106`).
+- **Telemetry State**: Tracks speed (`km/h`), fuel level (`0-100%`), engine health (`0-100%`), odometer (`km`), cargo weight (`kg`), safety score (`0-100`), ROI yield (`%`), and open smart alerts.
+
+### 6.3 Map Layer Architecture & Geofencing Hubs
+- **Status Color Encoding**: Markers visually encode live asset status:
+  - `Moving` → Green (`#10b981`)
+  - `Stopped` → Orange (`#f97316`)
+  - `Idling` → Yellow (`#eab308`)
+  - `Breakdown` → Red (`#ef4444`)
+  - `Maintenance` → Purple (`#a855f7`)
+  - `Offline` → Gray (`#6b7280`)
+- **Geofenced Regional Hubs**: Renders translucent circular vector boundaries (`Circle`) around 5 primary Eastern India hubs (`Kolkata CCU-01`, `Durgapur DGP-02`, `Siliguri SGU-03`, `Ranchi RNC-04`, `Bhubaneswar BBI-05`).
+- **Geofence Inside/Outside Engine**: Automatically computes whether each vehicle's coordinates fall inside a geofenced zone radius or en route on an open highway corridor.
+
+### 6.4 One-Click Judge Demo Scenarios & Route Playback
+To provide instant demonstration capabilities for hackathon evaluation:
+- **Playback Controls**: Interactive `Play`, `Pause`, and `Reset` controls to run or suspend live GPS tick execution.
+- **Simulate Dispatch**: Launches a stopped asset onto active Corridor `TRP-101`.
+- **Simulate Breakdown**: Instantly reduces engine health to 31%, transitions asset status to `Breakdown` (Red), and triggers `ENGINE_OVERHEAT_CRITICAL`.
+- **Simulate Traffic Delay**: Halves speed and scales ETA by 1.6x across active highway corridors.
+- **Simulate Fuel Drop**: Drops fuel level to 11%, triggering high-priority `LOW_FUEL_ALERT`.

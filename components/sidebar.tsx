@@ -19,7 +19,8 @@ import {
   FileText,
   Mail,
   FileSpreadsheet,
-  Navigation
+  Navigation,
+  Radio
 } from 'lucide-react'
 
 interface NavItem {
@@ -35,6 +36,12 @@ const allNavItems: NavItem[] = [
     href: '/dashboard',
     icon: <LayoutDashboard className="w-5 h-5" />,
     roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Financial Analyst', 'Driver', 'Admin']
+  },
+  {
+    label: 'Live Operations',
+    href: '/live-operations',
+    icon: <Radio className="w-5 h-5 text-emerald-400 animate-pulse" />,
+    roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Admin']
   },
   {
     label: 'Vehicles Registry',
