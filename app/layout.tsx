@@ -57,7 +57,6 @@ export default function RootLayout({
         className={`${inter.className} antialiased bg-background text-on-background overflow-x-hidden selection:bg-[#FF5A36]/20 selection:text-[#FF5A36]`}
       >
         <ThemeProvider defaultTheme="system">
-          <MapBackground />
           {children}
         </ThemeProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}

@@ -60,7 +60,7 @@ export default function ExpensesPage() {
     <div className="min-h-screen bg-surface flex">
       <Sidebar />
 
-      <main className="flex-1 p-8 overflow-y-auto">
+      <main className="flex-1 md:ml-60 p-6 md:p-8 overflow-y-auto">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-6 border-b border-white/10">
           <div>
             <div className="flex items-center gap-2 mb-1">

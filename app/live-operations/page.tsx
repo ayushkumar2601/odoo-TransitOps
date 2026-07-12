@@ -113,7 +113,7 @@ export default function LiveOperationsPage() {
     <div className="flex h-screen bg-[#09090B] text-[#FAFAFA] overflow-hidden">
       <Sidebar />
 
-      <main className="flex-1 md:ml-64 flex flex-col h-full overflow-hidden">
+      <main className="flex-1 md:ml-60 flex flex-col h-full overflow-hidden">
         {/* Top Header & Telemetry Status Pill Strip */}
         <header className="px-6 py-4 border-b border-[#27272A] bg-[#111113] flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
           <div>

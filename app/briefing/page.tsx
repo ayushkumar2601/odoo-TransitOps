@@ -282,7 +282,7 @@ export default function ExecutiveBriefingPage() {
     <div className="min-h-screen bg-surface flex">
       <Sidebar />
 
-      <main className="flex-1 flex flex-col h-screen overflow-y-auto">
+      <main className="flex-1 md:ml-60 flex flex-col h-screen overflow-y-auto">
         {/* Header Bar */}
         <header className="px-8 py-6 border-b border-white/10 bg-surface flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
           <div>
