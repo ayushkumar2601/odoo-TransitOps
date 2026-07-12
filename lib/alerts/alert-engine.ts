@@ -1,4 +1,5 @@
 import { store } from '@/lib/mock'
+import { getStoredVehicleDocuments } from '@/lib/mock/vehicle-documents'
 
 export interface SmartAlert {
   id: string
@@ -135,6 +136,36 @@ export function generateSmartAlerts(): SmartAlert[] {
       createdAt: nowStr,
       actionLink: '/trips'
     })
+  }
+
+  // 5. Vehicle Document Expiry Alerts (Phase 1.6 Odoo PRD)
+  try {
+    const docs = getStoredVehicleDocuments()
+    docs.forEach(doc => {
+      if (doc.status === 'Expired') {
+        alerts.push({
+          id: `ALT-DOC-EXP-${doc.id}`,
+          title: `EXPIRED DOCUMENT: ${doc.vehicleRegistration} (${doc.documentType})`,
+          description: `Document #${doc.documentNumber} expired on ${doc.expiryDate}. Immediate RTO compliance renewal required.`,
+          severity: 'Critical',
+          category: 'License',
+          createdAt: nowStr,
+          actionLink: '/vehicle-documents'
+        })
+      } else if (doc.status === 'Expiring Soon') {
+        alerts.push({
+          id: `ALT-DOC-SOON-${doc.id}`,
+          title: `Document Expiring Soon: ${doc.vehicleRegistration} (${doc.documentType})`,
+          description: `Document #${doc.documentNumber} expires on ${doc.expiryDate}. Schedule renewal with issuing authority.`,
+          severity: 'High',
+          category: 'License',
+          createdAt: nowStr,
+          actionLink: '/vehicle-documents'
+        })
+      }
+    })
+  } catch (e) {
+    // Fallback if document module uninitialized
   }
 
   // Sort by severity order: Critical -> High -> Medium -> Low

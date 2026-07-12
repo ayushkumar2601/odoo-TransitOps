@@ -35,6 +35,13 @@ const TRANSITOPS_ROLES = [
     email: 'finance@transitops.io',
     password: 'transit2026',
     badge: 'bg-purple-500/10 text-purple-400 border-purple-500/20'
+  },
+  {
+    role: 'Driver',
+    name: 'Rajesh Roy',
+    email: 'driver@transitops.io',
+    password: 'transit2026',
+    badge: 'bg-rose-500/10 text-rose-400 border-rose-500/20'
   }
 ]
 
@@ -73,7 +80,11 @@ export default function SignInPage() {
         body: JSON.stringify({ email, role: roleToUse })
       }).catch(() => {})
 
-      router.push('/dashboard')
+      if (roleToUse === 'Driver') {
+        router.push('/driver-portal')
+      } else {
+        router.push('/dashboard')
+      }
     } catch (err) {
       setError('Failed to authenticate')
     } finally {

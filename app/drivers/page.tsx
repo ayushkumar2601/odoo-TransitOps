@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { Sidebar } from '../../components/sidebar'
 import { store, Driver } from '@/lib/mock'
 import {
@@ -134,10 +135,12 @@ export default function DriversPage() {
                 </div>
 
                 <div className="flex items-center justify-between pt-3 text-xs">
-                  <span className="text-on-surface-variant flex items-center gap-1.5">
-                    <Phone className="w-3.5 h-3.5 text-primary" />
-                    Contact Number
-                  </span>
+                  <Link
+                    href={`/drivers/${d.id}`}
+                    className="text-primary hover:underline font-semibold"
+                  >
+                    Performance Center →
+                  </Link>
                   <span className="font-mono text-on-surface">{d.contactNumber}</span>
                 </div>
               </div>

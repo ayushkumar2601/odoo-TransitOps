@@ -2,10 +2,15 @@
 
 import React, { useEffect, useState } from 'react'
 import { Sidebar } from '../../components/sidebar'
+import Link from 'next/link'
 import { store, Vehicle } from '@/lib/mock'
+import { getStoredVehicleDocuments } from '@/lib/mock/vehicle-documents'
+import { VehicleTimeline } from '@/components/vehicle-timeline'
+import { CSVImportModal } from '@/components/csv-import-modal'
 import {
   Truck,
   Plus,
+  Upload,
   TrendingUp,
   AlertCircle,
   X,
@@ -18,6 +23,8 @@ export default function VehiclesPage() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([])
   const [filter, setFilter] = useState<string>('All')
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showImport, setShowImport] = useState(false)
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null)
 
   // New vehicle form state
   const [regNum, setRegNum] = useState('WB-25-P-9001')
@@ -85,14 +92,30 @@ export default function VehiclesPage() {
             </p>
           </div>
 
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="mt-4 md:mt-0 px-4 py-2.5 bg-primary text-on-primary font-semibold rounded-xl flex items-center gap-2 hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 text-sm"
-          >
-            <Plus className="w-4 h-4" />
-            Register New Vehicle
-          </button>
+          <div className="flex items-center gap-2 mt-4 md:mt-0">
+            <button
+              onClick={() => setShowImport(true)}
+              className="px-4 py-2.5 bg-surface-container-low hover:bg-white/10 border border-white/15 text-white font-semibold rounded-xl flex items-center gap-2 transition-all text-sm"
+            >
+              <Upload className="w-4 h-4 text-primary" />
+              Import CSV
+            </button>
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="px-4 py-2.5 bg-primary text-on-primary font-semibold rounded-xl flex items-center gap-2 hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 text-sm"
+            >
+              <Plus className="w-4 h-4" />
+              Register New Vehicle
+            </button>
+          </div>
         </div>
+
+        <CSVImportModal
+          isOpen={showImport}
+          category="Vehicles"
+          onClose={() => setShowImport(false)}
+          onImported={() => loadVehicles()}
+        />
 
         {/* Status Filter Bar */}
         <div className="flex gap-2 mb-6">
@@ -116,12 +139,13 @@ export default function VehiclesPage() {
           {filteredVehicles.map((v) => (
             <div
               key={v.id}
-              className="p-5 rounded-2xl bg-surface-container-low border border-white/10 hover:border-white/20 transition-all flex flex-col justify-between"
+              onClick={() => setSelectedVehicle(v)}
+              className="bg-surface-container-low border border-white/10 rounded-2xl p-5 flex flex-col justify-between hover:border-primary/50 transition-all shadow-md group cursor-pointer"
             >
               <div>
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <span className="font-mono font-bold text-primary text-base tracking-wide">
+                    <span className="font-mono font-bold text-primary text-base tracking-wide group-hover:text-purple-400 transition-colors">
                       {v.registrationNumber}
                     </span>
                     <h3 className="text-sm font-bold text-on-surface mt-0.5">{v.vehicleName}</h3>
@@ -162,12 +186,108 @@ export default function VehiclesPage() {
               </div>
 
               <div className="flex items-center justify-between pt-3 text-xs">
-                <span className="text-on-surface-variant">Acquisition Cost</span>
+                <span className="text-primary hover:underline font-semibold flex items-center gap-1">
+                  View Docs & Profile →
+                </span>
                 <span className="font-bold text-amber-400">₹{v.acquisitionCost.toLocaleString()}</span>
               </div>
             </div>
           ))}
         </div>
+
+        {/* Selected Vehicle Profile & Compliance Documents Drawer */}
+        {selectedVehicle && (
+          <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+            <div className="bg-surface-container rounded-2xl border border-white/15 w-full max-w-2xl max-h-[85vh] overflow-y-auto p-6 shadow-2xl">
+              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-lg font-bold text-primary">{selectedVehicle.registrationNumber}</span>
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-white/10 text-on-surface">{selectedVehicle.status}</span>
+                  </div>
+                  <h3 className="text-base font-bold text-white mt-0.5">{selectedVehicle.vehicleName} — {selectedVehicle.vehicleType}</h3>
+                </div>
+                <button onClick={() => setSelectedVehicle(null)} className="text-on-surface-variant hover:text-white">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4 py-4 border-b border-white/10 text-xs">
+                <div className="p-3 rounded-xl bg-surface">
+                  <span className="text-on-surface-variant block">Region Hub</span>
+                  <strong className="text-sm text-white">{selectedVehicle.region}</strong>
+                </div>
+                <div className="p-3 rounded-xl bg-surface">
+                  <span className="text-on-surface-variant block">Odometer</span>
+                  <strong className="text-sm font-mono text-white">{selectedVehicle.odometer.toLocaleString()} km</strong>
+                </div>
+                <div className="p-3 rounded-xl bg-surface">
+                  <span className="text-on-surface-variant block">Acquisition Cost</span>
+                  <strong className="text-sm font-bold text-amber-400">₹{selectedVehicle.acquisitionCost.toLocaleString()}</strong>
+                </div>
+              </div>
+
+              <div className="py-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-bold text-sm text-white">Compliance Documents (RC, Insurance, PUC, Fitness, Permit)</h4>
+                  <Link
+                    href="/vehicle-documents"
+                    className="text-xs text-primary font-semibold hover:underline"
+                  >
+                    Open Document Registry →
+                  </Link>
+                </div>
+
+                <div className="space-y-2">
+                  {getStoredVehicleDocuments()
+                    .filter(d => d.vehicleId === selectedVehicle.id || d.vehicleRegistration === selectedVehicle.registrationNumber)
+                    .map(doc => (
+                      <div
+                        key={doc.id}
+                        className="p-3.5 rounded-xl bg-surface border border-white/10 flex items-center justify-between text-xs"
+                      >
+                        <div>
+                          <div className="font-bold text-white">{doc.documentType}</div>
+                          <div className="text-on-surface-variant font-mono mt-0.5">
+                            #{doc.documentNumber} • Expires: {doc.expiryDate}
+                          </div>
+                        </div>
+                        <span
+                          className={`px-2.5 py-1 rounded-full font-bold uppercase text-[10px] border ${
+                            doc.status === 'Expired'
+                              ? 'bg-rose-500/15 text-rose-400 border-rose-500/30'
+                              : doc.status === 'Expiring Soon'
+                              ? 'bg-amber-500/15 text-amber-400 border-amber-500/30'
+                              : 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+                          }`}
+                        >
+                          {doc.status}
+                        </span>
+                      </div>
+                    ))}
+                  {getStoredVehicleDocuments().filter(d => d.vehicleId === selectedVehicle.id || d.vehicleRegistration === selectedVehicle.registrationNumber).length === 0 && (
+                    <div className="p-4 rounded-xl bg-surface border border-white/10 text-center text-xs text-on-surface-variant">
+                      No documents currently uploaded. Visit Document Registry to upload RC, Insurance, or PUC.
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="py-4 border-t border-white/10">
+                <VehicleTimeline vehicleRegistration={selectedVehicle.registrationNumber} />
+              </div>
+
+              <div className="flex justify-end pt-4 border-t border-white/10">
+                <button
+                  onClick={() => setSelectedVehicle(null)}
+                  className="px-4 py-2 rounded-xl bg-primary text-on-primary font-bold text-xs"
+                >
+                  Close Profile
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Add Vehicle Modal */}
         {showAddModal && (

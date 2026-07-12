@@ -15,7 +15,11 @@ import {
   Menu,
   X,
   ShieldCheck,
-  UserCheck
+  UserCheck,
+  FileText,
+  Mail,
+  FileSpreadsheet,
+  Navigation
 } from 'lucide-react'
 
 interface NavItem {
@@ -30,7 +34,7 @@ const allNavItems: NavItem[] = [
     label: 'Dashboard',
     href: '/dashboard',
     icon: <LayoutDashboard className="w-5 h-5" />,
-    roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Financial Analyst', 'Admin']
+    roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Financial Analyst', 'Driver', 'Admin']
   },
   {
     label: 'Vehicles Registry',
@@ -39,10 +43,22 @@ const allNavItems: NavItem[] = [
     roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Financial Analyst', 'Admin']
   },
   {
+    label: 'Vehicle Documents',
+    href: '/vehicle-documents',
+    icon: <FileText className="w-5 h-5" />,
+    roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Financial Analyst', 'Admin']
+  },
+  {
     label: 'Driver Governance',
     href: '/drivers',
     icon: <Users className="w-5 h-5" />,
     roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Admin']
+  },
+  {
+    label: 'Driver Portal',
+    href: '/driver-portal',
+    icon: <Navigation className="w-5 h-5" />,
+    roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Driver', 'Admin']
   },
   {
     label: 'Trip Dispatching',
@@ -63,10 +79,22 @@ const allNavItems: NavItem[] = [
     roles: ['Fleet Manager', 'Financial Analyst', 'Admin']
   },
   {
+    label: 'Email Reminders',
+    href: '/emails',
+    icon: <Mail className="w-5 h-5" />,
+    roles: ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Financial Analyst', 'Admin']
+  },
+  {
     label: 'BI Analytics & ROI',
     href: '/analytics',
     icon: <BarChart3 className="w-5 h-5" />,
     roles: ['Fleet Manager', 'Financial Analyst', 'Admin']
+  },
+  {
+    label: 'Enterprise Audit Log',
+    href: '/audit-log',
+    icon: <FileSpreadsheet className="w-5 h-5" />,
+    roles: ['Fleet Manager', 'Safety Officer', 'Admin']
   }
 ]
 

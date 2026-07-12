@@ -4,6 +4,12 @@ import React, { useEffect, useState } from 'react'
 import { Sidebar } from '../../components/sidebar'
 import { store, getDashboardKPIs, getAnalyticsSummary } from '@/lib/mock'
 import {
+  getStoredDashboardFilters,
+  saveDashboardFilters,
+  FilterCriteria,
+  filterVehicles
+} from '@/lib/filtering/filter-engine'
+import {
   FleetHealthWidget,
   CriticalVehiclesWidget,
   ExpiringLicensesWidget,
@@ -62,6 +68,7 @@ export default function DashboardPage() {
   const [showSearch, setShowSearch] = useState(false)
   const [showCopilot, setShowCopilot] = useState(false)
   const [scenarioToast, setScenarioToast] = useState<{ title: string; message: string } | null>(null)
+  const [filters, setFilters] = useState<FilterCriteria>({ vehicleType: 'All', status: 'All', region: 'All', dateRange: 'All' })
 
   function loadDashboardState() {
     setData(getDashboardKPIs())
@@ -77,6 +84,7 @@ export default function DashboardPage() {
     const savedName = localStorage.getItem('user_name') || 'Aditya Banerjee'
     setUserRole(savedRole)
     setUserName(savedName)
+    setFilters(getStoredDashboardFilters())
     loadDashboardState()
   }, [])
 
@@ -158,7 +166,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Hackathon Demo Scenario Automation Bar */}
-        <div className="p-4 rounded-2xl bg-surface-container-low border border-white/10 mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="p-4 rounded-2xl bg-surface-container-low border border-white/10 mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <Play className="w-5 h-5 text-primary shrink-0" />
             <div>
@@ -193,6 +201,112 @@ export default function DashboardPage() {
               <RotateCcw className="w-3.5 h-3.5" />
               Reset Seed Data
             </button>
+          </div>
+        </div>
+
+        {/* Phase 1.6 Universal Dashboard Multi-Attribute Filter Bar */}
+        <div className="p-4 rounded-2xl bg-surface-container border border-white/15 mb-8 shadow-lg">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-xs font-bold text-white uppercase tracking-wider">Live Telemetry Filters</span>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3">
+              {/* Vehicle Type Filter */}
+              <div className="flex items-center gap-1.5 bg-surface rounded-xl px-3 py-1.5 border border-white/10">
+                <span className="text-xs text-on-surface-variant font-semibold">Type:</span>
+                <select
+                  value={filters.vehicleType || 'All'}
+                  onChange={(e) => {
+                    const next = { ...filters, vehicleType: e.target.value }
+                    setFilters(next)
+                    saveDashboardFilters(next)
+                  }}
+                  className="bg-transparent text-xs text-white font-bold focus:outline-none"
+                >
+                  <option value="All" className="bg-surface text-white">All Types</option>
+                  <option value="Mini Truck" className="bg-surface text-white">Mini Truck</option>
+                  <option value="Light Commercial Vehicle" className="bg-surface text-white">Light Commercial Vehicle</option>
+                  <option value="Container Truck" className="bg-surface text-white">Container Truck</option>
+                  <option value="Refrigerated Truck" className="bg-surface text-white">Refrigerated Truck</option>
+                  <option value="Pickup Van" className="bg-surface text-white">Pickup Van</option>
+                </select>
+              </div>
+
+              {/* Status Filter */}
+              <div className="flex items-center gap-1.5 bg-surface rounded-xl px-3 py-1.5 border border-white/10">
+                <span className="text-xs text-on-surface-variant font-semibold">Status:</span>
+                <select
+                  value={filters.status || 'All'}
+                  onChange={(e) => {
+                    const next = { ...filters, status: e.target.value }
+                    setFilters(next)
+                    saveDashboardFilters(next)
+                  }}
+                  className="bg-transparent text-xs text-white font-bold focus:outline-none"
+                >
+                  <option value="All" className="bg-surface text-white">All Statuses</option>
+                  <option value="Available" className="bg-surface text-white">Available</option>
+                  <option value="On Trip" className="bg-surface text-white">On Trip</option>
+                  <option value="In Shop" className="bg-surface text-white">In Shop</option>
+                </select>
+              </div>
+
+              {/* Region Filter */}
+              <div className="flex items-center gap-1.5 bg-surface rounded-xl px-3 py-1.5 border border-white/10">
+                <span className="text-xs text-on-surface-variant font-semibold">Region:</span>
+                <select
+                  value={filters.region || 'All'}
+                  onChange={(e) => {
+                    const next = { ...filters, region: e.target.value }
+                    setFilters(next)
+                    saveDashboardFilters(next)
+                  }}
+                  className="bg-transparent text-xs text-white font-bold focus:outline-none"
+                >
+                  <option value="All" className="bg-surface text-white">All Regions</option>
+                  <option value="Kolkata" className="bg-surface text-white">Kolkata</option>
+                  <option value="Siliguri" className="bg-surface text-white">Siliguri</option>
+                  <option value="Howrah" className="bg-surface text-white">Howrah</option>
+                  <option value="Bhubaneswar" className="bg-surface text-white">Bhubaneswar</option>
+                  <option value="Patna" className="bg-surface text-white">Patna</option>
+                  <option value="Guwahati" className="bg-surface text-white">Guwahati</option>
+                </select>
+              </div>
+
+              {/* Date Range Filter */}
+              <div className="flex items-center gap-1.5 bg-surface rounded-xl px-3 py-1.5 border border-white/10">
+                <span className="text-xs text-on-surface-variant font-semibold">Window:</span>
+                <select
+                  value={filters.dateRange || 'All'}
+                  onChange={(e) => {
+                    const next = { ...filters, dateRange: e.target.value as any }
+                    setFilters(next)
+                    saveDashboardFilters(next)
+                  }}
+                  className="bg-transparent text-xs text-white font-bold focus:outline-none"
+                >
+                  <option value="All" className="bg-surface text-white">All-Time Telemetry</option>
+                  <option value="Today" className="bg-surface text-white">Today</option>
+                  <option value="Last 7 Days" className="bg-surface text-white">Last 7 Days</option>
+                  <option value="Last 30 Days" className="bg-surface text-white">Last 30 Days</option>
+                </select>
+              </div>
+
+              {(filters.vehicleType !== 'All' || filters.status !== 'All' || filters.region !== 'All' || filters.dateRange !== 'All') && (
+                <button
+                  onClick={() => {
+                    const reset = { vehicleType: 'All', status: 'All', region: 'All', dateRange: 'All' }
+                    setFilters(reset)
+                    saveDashboardFilters(reset)
+                  }}
+                  className="px-3 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 font-bold text-xs border border-rose-500/40"
+                >
+                  Clear Filters
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
