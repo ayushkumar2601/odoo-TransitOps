@@ -40,7 +40,7 @@ export function FleetCopilotModal({
 
   if (!isOpen) return null
 
-  function handleSend(promptText?: string) {
+  async function handleSend(promptText?: string) {
     const query = promptText || input
     if (!query.trim()) return
 
@@ -49,30 +49,60 @@ export function FleetCopilotModal({
     setInput('')
     setIsLoading(true)
 
-    setTimeout(() => {
+    try {
       const analytics = getAnalyticsSummary()
-      const topVeh = analytics.vehicle_roi_ranking?.[0]?.registrationNumber || 'WB-04-E-1042'
-      const inShopCount = store.vehicles.filter(v => v.status === 'In Shop').length
-      const q = query.toLowerCase()
-
-      let reply = ''
-      if (q.includes('maintenance') || q.includes('shop') || q.includes('require')) {
-        reply = `### Workshop & Maintenance Diagnostics\nCurrently, **${inShopCount} vehicles** are locked In Shop (**BR-012**). Heavy commercial trucks approaching 150,000 km odometer thresholds are flagged for engine overhaul. Preventive maintenance reduces highway breakdown risk by 42%.`
-      } else if (q.includes('underutilized') || q.includes('idle') || q.includes('utilization')) {
-        reply = `### Fleet Utilization Intelligence\nOur current utilization rate stands at **${analytics.fleet_utilization_rate}%**. Assets in **Available** status across Howrah and Asansol hubs are primed for immediate corridor dispatch.`
-      } else if (q.includes('driver') || q.includes('best') || q.includes('who')) {
-        reply = `### Driver Personnel Roster\nTop-rated drivers include **Rahul Sharma** (94/100 Safety Score) and **Amit Das** (98/100). Note that **2 drivers** have expired licenses and are strictly locked under **BR-004**.`
-      } else if (q.includes('roi') || q.includes('highest') || q.includes('asset')) {
-        reply = `### Asset Net ROI Yield\n**${topVeh}** ranks #1 in Net ROI yield across all 25 commercial assets. Container transport on the Kolkata → Siliguri highway corridor delivers the highest profit margin.`
-      } else if (q.includes('fuel') || q.includes('cost')) {
-        reply = `### Fuel Telemetry Analysis\nAverage diesel rate across Eastern India highway hubs is **₹93.5/L**. Heavy haulage container trucks average **4.62 km/L**. Implementing Eco-Haul routing rules saves approx. 8.4% monthly fuel expenditure.`
-      } else {
-        reply = `### Executive Copilot Summary\n• **Active Haulage**: ${analytics.vehicles_on_trip} vehicles On Trip (${analytics.fleet_utilization_rate}% utilization)\n• **Top ROI Asset**: ${topVeh}\n• **Workshop Lock**: ${inShopCount} vehicles In Shop\n• **Governance**: All 13 Business Rules active & enforced.`
+      const context = {
+        totalVehicles: store.vehicles.length,
+        vehiclesOnTrip: store.vehicles.filter(v => v.status === 'On Trip').length,
+        vehiclesInShop: store.vehicles.filter(v => v.status === 'In Shop').length,
+        vehiclesAvailable: store.vehicles.filter(v => v.status === 'Available').length,
+        totalDrivers: store.drivers.length,
+        expiredLicenses: store.drivers.filter(d => d.expiryDate < new Date().toISOString().split('T')[0]).length,
+        utilizationRate: analytics.fleet_utilization_rate,
+        topRoiAsset: analytics.vehicle_roi_ranking?.[0]?.registrationNumber || 'WB-04-E-1042'
       }
 
-      setMessages([...newMessages, { role: 'assistant', content: reply }])
-      setIsLoading(false)
-    }, 600)
+      const res = await fetch('/api/copilot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: query, context })
+      })
+
+      if (res.ok) {
+        const data = await res.json()
+        if (data.success && data.reply) {
+          setMessages([...newMessages, { role: 'assistant', content: data.reply }])
+          setIsLoading(false)
+          return
+        }
+      }
+    } catch (e) {
+      console.warn('Groq API call fell back to local rules:', e)
+    }
+
+    // Fallback if network issue occurs
+    const analytics = getAnalyticsSummary()
+    const topVeh = analytics.vehicle_roi_ranking?.[0]?.registrationNumber || 'WB-04-E-1042'
+    const inShopCount = store.vehicles.filter(v => v.status === 'In Shop').length
+    const q = query.toLowerCase()
+
+    let reply = ''
+    if (q.includes('maintenance') || q.includes('shop') || q.includes('require')) {
+      reply = `### Workshop & Maintenance Diagnostics\nCurrently, **${inShopCount} vehicles** are locked In Shop (**BR-012**). Heavy commercial trucks approaching 150,000 km odometer thresholds are flagged for engine overhaul.`
+    } else if (q.includes('underutilized') || q.includes('idle') || q.includes('utilization')) {
+      reply = `### Fleet Utilization Intelligence\nOur current utilization rate stands at **${analytics.fleet_utilization_rate}%**. Assets in **Available** status across regional hubs are ready for immediate corridor dispatch.`
+    } else if (q.includes('driver') || q.includes('best') || q.includes('who')) {
+      reply = `### Driver Personnel Roster\nTop-rated drivers include **Rahul Sharma** (94/100 Safety Score) and **Amit Das** (98/100). Note that **2 drivers** have expired licenses and are strictly locked under **BR-004**.`
+    } else if (q.includes('roi') || q.includes('highest') || q.includes('asset')) {
+      reply = `### Asset Net ROI Yield\n**${topVeh}** ranks #1 in Net ROI yield across all 25 commercial assets.`
+    } else if (q.includes('fuel') || q.includes('cost')) {
+      reply = `### Fuel Telemetry Analysis\nAverage diesel rate across Eastern India highway hubs is **₹93.5/L**.`
+    } else {
+      reply = `### Executive Copilot Summary\n• **Active Haulage**: ${analytics.vehicles_on_trip} vehicles On Trip (${analytics.fleet_utilization_rate}% utilization)\n• **Top ROI Asset**: ${topVeh}\n• **Workshop Lock**: ${inShopCount} vehicles In Shop\n• **Governance**: All 13 Business Rules active & enforced.`
+    }
+
+    setMessages([...newMessages, { role: 'assistant', content: reply }])
+    setIsLoading(false)
   }
 
   return (
