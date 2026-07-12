@@ -2,16 +2,19 @@ import type { Metadata } from 'next'
 
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
-import { Space_Grotesk, Inter } from 'next/font/google'
+import { Plus_Jakarta_Sans } from 'next/font/google'
 
 // Initialize fonts
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ["400", "500", "600", "700"] })
-const inter = Inter({ subsets: ['latin'], weight: ["400", "500"] })
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800'],
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
-  title: 'VoyagerX - Redefining Travel with AI & Blockchain',
-  description: 'Effortless planning, secure bookings, and limitless exploration — tailored just for you.',
-  generator: 'v0.app',
+  title: 'TransitOps — Enterprise Fleet Intelligence Platform',
+  description: 'AI-powered transport operations, digital twins, predictive maintenance, and real-time haulage dispatch.',
+  generator: 'TransitOps',
   icons: {
     icon: [
       {
@@ -43,11 +46,14 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
       className="dark scroll-smooth"
-      style={{ '--font-heading': spaceGrotesk.style.fontFamily, '--font-body': inter.style.fontFamily } as React.CSSProperties}
+      style={{
+        '--font-heading': plusJakarta.style.fontFamily,
+        '--font-body': plusJakarta.style.fontFamily,
+      } as React.CSSProperties}
     >
       <body
         suppressHydrationWarning
-        className="font-body-md antialiased bg-background text-on-background overflow-x-hidden selection:bg-surface-variant selection:text-primary"
+        className={`${plusJakarta.className} antialiased bg-background text-on-background overflow-x-hidden selection:bg-surface-variant selection:text-primary`}
       >
         <MapBackground />
         {children}
