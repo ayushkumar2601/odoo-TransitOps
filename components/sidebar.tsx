@@ -246,9 +246,9 @@ export const Sidebar: React.FC = () => {
 
       {/* Sidebar container */}
       <aside
-        className={`fixed left-0 top-0 h-screen bg-[#111113] border-r border-[#27272A] flex flex-col transition-all duration-300 z-40 md:translate-x-0 ${
-          isOpenMobile ? 'translate-x-0 w-64' : '-translate-x-full'
-        } ${isCollapsed ? 'md:w-20' : 'md:w-64'}`}
+        className={`fixed left-0 top-0 h-screen bg-[#09090B] border-r border-[#27272A]/80 flex flex-col transition-all duration-300 z-40 md:translate-x-0 ${
+          isOpenMobile ? 'translate-x-0 w-60' : '-translate-x-full'
+        } ${isCollapsed ? 'md:w-20' : 'md:w-60'}`}
       >
         {/* Header Logo */}
         <div className="p-4 border-b border-[#27272A] flex items-center justify-between">

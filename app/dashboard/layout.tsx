@@ -13,10 +13,10 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#09090B] text-[#FAFAFA]">
       <Sidebar />
       <TopBar title="Dashboard" />
-      <main className="md:ml-64 pt-24 pb-8 px-4 md:px-8">
+      <main className="md:ml-60 pt-20 pb-12 px-4 md:px-10">
         {children}
       </main>
     </div>

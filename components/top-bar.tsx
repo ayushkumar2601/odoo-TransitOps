@@ -26,7 +26,7 @@ export const TopBar: React.FC<TopBarProps> = ({
   }, [])
 
   return (
-    <header className="fixed top-0 left-0 md:left-64 right-0 h-16 flex items-center justify-between px-6 border-b border-[#27272A] bg-[#09090B]/90 backdrop-blur-md z-30 transition-all">
+    <header className="fixed top-0 left-0 md:left-60 right-0 h-16 flex items-center justify-between px-6 border-b border-[#27272A] bg-[#09090B]/90 backdrop-blur-md z-30 transition-all">
       <div className="flex items-center gap-4">
         <div>
           {title && (
