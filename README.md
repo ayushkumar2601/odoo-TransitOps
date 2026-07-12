@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./public/ss1.png" alt="TransitOps — Enterprise Fleet Intelligence Platform" width="100%" />
+<img src="./public/landing.png" alt="TransitOps — Enterprise Fleet Intelligence Platform" width="100%" />
 
 <br/>
 <br/>
@@ -23,11 +23,11 @@
 [![Build](https://img.shields.io/badge/Build-Passing_%E2%9C%85-16a34a?style=for-the-badge)](/)
 [![Routes](https://img.shields.io/badge/25_Routes-Production_Ready-6366f1?style=for-the-badge)](/)
 [![Features](https://img.shields.io/badge/56_Features-Implemented-f59e0b?style=for-the-badge)](/)
-[![LOC](https://img.shields.io/badge/279K_Lines-of_Code-ec4899?style=for-the-badge)](/)
+[![Demo Playbook](https://img.shields.io/badge/YC_Demo-5_Min_Playbook-FF5A36?style=for-the-badge)](./TRANSITOPS_5_MINUTE_DEMO_PLAYBOOK.md)
 
 <br/>
 
-[**🎬 10-Min Walkthrough**](#-10-minute-product-demo-walkthrough) • [**⚡ Quick Start**](#-quick-start) • [**🧠 Intelligence Layer**](#-intelligence-engine-layer) • [**🌟 Wow Factor**](#-wow-factor-features) • [**📊 Full Feature List**](#-complete-feature-index)
+[**🎬 5-Min YC Demo Playbook**](./TRANSITOPS_5_MINUTE_DEMO_PLAYBOOK.md) • [**📖 Feature Showcase**](./TRANSITOPS_FEATURE_SHOWCASE.md) • [**⚡ Quick Start**](#-quick-start) • [**🧠 Intelligence Layer**](#-intelligence-engine-layer) • [**🌟 Wow Factor**](#-wow-factor-features)
 
 </div>
 
@@ -55,19 +55,24 @@ It digitizes the **complete lifecycle** of commercial fleet operations — from 
 
 ---
 
-## 📸 Platform Preview
+## 📸 Prize-Winning Enterprise Platform Gallery
 
 <div align="center">
 
-| Executive Dashboard | Live Fleet Operations Map |
+| Cinematic Landing Hero | Executive Command Dashboard |
 |:---:|:---:|
-| ![Dashboard](./public/ss2.png) | ![Live Operations](./public/ss3.png) |
-| _Role-adaptive KPI Command Center_ | _25 vehicles on real NH road corridors_ |
+| ![Landing Page](./public/landing.png) | ![Executive Dashboard](./public/dash.png) |
+| _SaaS Landing Page with Full-Motion Haulage Video_ | _Financial KPIs, Smart Alerts & Instant PDF Board Export_ |
 
-| BI Analytics & ROI | Fleet Dispatch Management |
+| Live OSRM Road Map & AI Copilot | Haulage Highway Corridors |
 |:---:|:---:|
-| ![Analytics](./public/ss4.png) | ![Trips](./public/ss1.png) |
-| _Recharts financial intelligence suite_ | _AI-assisted trip dispatch with BR enforcement_ |
+| ![Live Operations Map](./public/maps.png) | ![Highway Routes](./public/route.png) |
+| _25 assets on Eastern India roads with Llama 3.3 Copilot_ | _Live corridor telemetry, Geofence hubs & ETAs_ |
+
+| BI Revenue & Financial Analytics Suite |
+|:---:|
+| ![Financial Analytics](./public/analytics.png) |
+| _Recharts dynamic revenue, fuel cost & ROI analytics across all 25 commercial haulage assets_ |
 
 </div>
 
