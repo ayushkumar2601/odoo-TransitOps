@@ -103,7 +103,7 @@ export default function DriversPage() {
     <div className="min-h-screen bg-surface flex">
       <Sidebar />
 
-      <main className="flex-1 md:ml-60 p-6 md:p-8 overflow-y-auto">
+      <main className="flex-1 p-6 md:p-8 overflow-y-auto">
         {successToast && (
           <div className="fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl bg-emerald-500 text-on-primary font-bold text-xs shadow-2xl flex items-center gap-2 animate-bounce">
             <CheckCircle2 className="w-4 h-4" />

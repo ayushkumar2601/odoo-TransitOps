@@ -378,7 +378,7 @@ export const Sidebar: React.FC = () => {
       {/* Spacer for desktop */}
       <div
         className={`hidden md:block shrink-0 transition-all duration-300 ${
-          isCollapsed ? 'w-20' : 'w-64'
+          isCollapsed ? 'w-20' : 'w-60'
         }`}
       />
     </>

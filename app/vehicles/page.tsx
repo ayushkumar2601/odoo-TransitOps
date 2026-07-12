@@ -78,7 +78,7 @@ export default function VehiclesPage() {
     <div className="min-h-screen bg-[#09090B] text-[#FAFAFA] flex">
       <Sidebar />
 
-      <main className="flex-1 md:ml-60 p-6 md:p-8">
+      <main className="flex-1 p-6 md:p-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-[#27272A]">
           <div>

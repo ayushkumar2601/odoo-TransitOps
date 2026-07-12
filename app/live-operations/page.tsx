@@ -113,7 +113,7 @@ export default function LiveOperationsPage() {
     <div className="flex h-screen bg-[#09090B] text-[#FAFAFA] overflow-hidden">
       <Sidebar />
 
-      <main className="flex-1 md:ml-60 flex flex-col h-full overflow-hidden">
+      <main className="flex-1 flex flex-col h-full overflow-hidden">
         {/* Top Header & Telemetry Status Pill Strip */}
         <header className="px-6 py-4 border-b border-[#27272A] bg-[#111113] flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
           <div>
@@ -239,6 +239,12 @@ export default function LiveOperationsPage() {
               >
                 <Layers className="w-3.5 h-3.5" /> Corridors
               </button>
+              <button
+                onClick={() => setIsCopilotOpen(true)}
+                className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#FF5A36] to-amber-500 hover:opacity-95 text-white font-bold flex items-center gap-1.5 shadow-lg shadow-[#FF5A36]/25 transition-all"
+              >
+                <Sparkles className="w-3.5 h-3.5" /> AI Fleet Copilot
+              </button>
             </div>
           </div>
         </div>
@@ -356,7 +362,8 @@ export default function LiveOperationsPage() {
         <CopilotDrawer
           isOpen={isCopilotOpen}
           onClose={() => setIsCopilotOpen(false)}
-          vehicle={selectedVehicle}
+          vehicles={vehicles}
+          onSelectVehicle={setSelectedVehicle}
         />
       </main>
     </div>

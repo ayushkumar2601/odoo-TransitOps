@@ -89,6 +89,10 @@ export default function CopilotDrawer({
       { role: 'user', text: question },
       { role: 'assistant', text, relatedVehicles: matched }
     ])
+
+    if (matched && matched.length > 0 && onSelectVehicle) {
+      onSelectVehicle(matched[0])
+    }
   }
 
   function handleSubmit(e: React.FormEvent) {

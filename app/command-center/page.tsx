@@ -81,7 +81,7 @@ export default function CommandCenterPage() {
     <div className="min-h-screen bg-slate-950 text-white flex">
       {!isFullscreen && <Sidebar />}
 
-      <main className={`flex-1 flex flex-col h-screen overflow-hidden ${!isFullscreen ? 'md:ml-60' : ''}`}>
+      <main className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Top Executive KPI Bar */}
         <header className="px-6 py-3.5 border-b border-white/10 bg-slate-900/90 backdrop-blur-md flex flex-wrap items-center justify-between gap-4 shrink-0">
           <div className="flex items-center gap-3">
