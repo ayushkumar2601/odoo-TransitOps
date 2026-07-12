@@ -1,9 +1,9 @@
 # 🚚 TransitOps — Enterprise Fleet Intelligence Platform
-## Feature Showcase & Judge Handbook
+## Feature Showcase & Architectural Reference
 
-> **Built for the Odoo × Adamas University Hackathon 2026**  
-> _This document is a demo-facing product guide — not technical documentation._  
-> For architecture details, see [`TRANSITOPS_TECHNICAL_DOCUMENTATION.md`](./TRANSITOPS_TECHNICAL_DOCUMENTATION.md)
+> **Enterprise Haulage & Autonomous Fleet Operations OS**  
+> _This document is an enterprise-facing feature showcase and product guide._  
+> For architecture details, see [`TECHNICAL_DOCUMENTATION.md`](./TECHNICAL_DOCUMENTATION.md)
 
 ---
 
@@ -507,11 +507,21 @@ Displayed as a color-coded AI Risk Badge on every driver profile card.
 ---
 
 ### 🌿 Sustainability Dashboard
-**Why judges will remember it:** A complete CO₂ emissions intelligence dashboard — Monthly emission trend charts, Diesel consumption bar chart, and a Vehicle Emission Intensity Ranking table for all 25 commercial assets with ESG Green ratings (A+ Green, A Compliant). In an era of mandatory corporate sustainability reporting, this is the feature that resonates with enterprise decision-makers.
+**Why users love it:** A complete CO₂ emissions intelligence dashboard — Monthly emission trend charts, Diesel consumption bar chart, and a Vehicle Emission Intensity Ranking table for all 25 commercial assets with ESG Green ratings (A+ Green, A Compliant). In an era of mandatory corporate sustainability reporting, this is the feature that resonates with enterprise decision-makers.
 
 ---
 
-## 8. Live Demo Script — 10 Minutes
+### 🎬 Cinematic Full-Motion Video Hero & Executive Control Bar
+**Why users love it:** The landing page features a cinematic full-motion haulage video background (`carArea.mp4`) with a compact 56px executive topbar masking external branding and a floating interactive glass control bar that launches the Live Fleet Map or Enterprise Dashboard instantly.
+
+---
+
+### 🔐 Minimal Orangish Sign-In Suite & Instant Demo Autofill
+**Why users love it:** A sleek 2-column dark card sign-in experience (`#FF5A36` warm orangish theme) featuring authentic haulage imagery on the left, streamlined email/password authentication on the right, and an interactive **"Select Demo Role & Autofill"** dropdown that populates credentials and intelligently routes users to role-specific dashboards (`/dashboard`, `/trips`, `/vehicle-documents`, `/expenses`, `/driver-portal`).
+
+---
+
+## 8. Live Product Walkthrough — 10 Minutes
 
 > **Optimized for maximum judge impact. Each step is 60 seconds.**
 
