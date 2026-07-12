@@ -24,10 +24,20 @@ export default function DriverPortalPage() {
   const [vehicle, setVehicle] = useState<Vehicle | null>(null)
   const [toast, setToast] = useState('')
 
+  function getTripDriverName(t: Trip): string {
+    const customName = (t as any).driverName
+    if (customName && typeof customName === 'string') return customName
+    const drv = store.drivers.find(d => d.id === t.driverId)
+    return drv ? drv.name : ''
+  }
+
   function loadDriverData() {
-    const name = localStorage.getItem('user_name') || 'Rajesh Roy'
+    const name = localStorage.getItem('user_name') || 'Rahul Sharma'
     setDriverName(name)
-    const myTrips = store.trips.filter(t => t.driverName.includes(name) || t.driverName.includes('Rajesh'))
+    const myTrips = store.trips.filter(t => {
+      const dName = getTripDriverName(t)
+      return dName.includes(name) || dName.includes('Rahul') || dName.includes('Rajesh')
+    })
     setTrips(myTrips.length > 0 ? myTrips : store.trips.slice(0, 3))
     setVehicle(store.vehicles[0])
   }
@@ -40,7 +50,11 @@ export default function DriverPortalPage() {
     const idx = store.trips.findIndex(t => t.id === id)
     if (idx !== -1) {
       store.trips[idx].status = newStatus
-      setTrips([...store.trips.filter(t => t.driverName.includes(driverName) || t.driverName.includes('Rajesh'))])
+      const myTrips = store.trips.filter(t => {
+        const dName = getTripDriverName(t)
+        return dName.includes(driverName) || dName.includes('Rahul') || dName.includes('Rajesh')
+      })
+      setTrips([...(myTrips.length > 0 ? myTrips : store.trips.slice(0, 3))])
       setToast(`Trip status updated to: ${newStatus}`)
       setTimeout(() => setToast(''), 3500)
     }
@@ -135,9 +149,9 @@ export default function DriverPortalPage() {
                   </div>
 
                   <div className="flex flex-wrap items-center gap-4 text-xs text-on-surface-variant">
-                    <span>Cargo: <strong className="text-white">{trip.cargoWeight} kg</strong></span>
-                    <span>Distance: <strong className="text-white">{trip.distanceKm} km</strong></span>
-                    <span>Revenue Yield: <strong className="text-amber-400">₹{trip.freightRevenue.toLocaleString()}</strong></span>
+                    <span>Cargo: <strong className="text-white">{(trip.cargoWeight || 0).toLocaleString()} kg</strong></span>
+                    <span>Distance: <strong className="text-white">{(trip.plannedDistance || (trip as any).distanceKm || 0)} km</strong></span>
+                    <span>Revenue Yield: <strong className="text-amber-400">₹{(trip.plannedRevenue || (trip as any).freightRevenue || 0).toLocaleString()}</strong></span>
                   </div>
                 </div>
 

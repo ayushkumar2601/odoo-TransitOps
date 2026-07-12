@@ -27,11 +27,21 @@ export default function DriverProfileDetail() {
   const [driver, setDriver] = useState<Driver | null>(null)
   const [driverTrips, setDriverTrips] = useState<Trip[]>([])
 
+  function getTripDriverName(t: Trip): string {
+    const customName = (t as any).driverName
+    if (customName && typeof customName === 'string') return customName
+    const drv = store.drivers.find(d => d.id === t.driverId)
+    return drv ? drv.name : ''
+  }
+
   useEffect(() => {
     const found = store.drivers.find(d => d.id === driverId) || store.drivers[0]
     setDriver(found)
     if (found) {
-      const trips = store.trips.filter(t => t.driverName === found.name || t.driverName.includes(found.name.split(' ')[0]))
+      const trips = store.trips.filter(t => {
+        const dName = getTripDriverName(t)
+        return dName === found.name || dName.includes(found.name.split(' ')[0])
+      })
       setDriverTrips(trips)
     }
   }, [driverId])
@@ -165,13 +175,13 @@ export default function DriverProfileDetail() {
                       {trip.source} → {trip.destination}
                     </td>
                     <td className="p-4 font-mono text-xs text-on-surface-variant">
-                      {trip.vehicleRegistration}
+                      {(trip as any).vehicleRegistration || trip.vehicleId}
                     </td>
                     <td className="p-4 text-emerald-400 font-semibold">
-                      {trip.cargoWeight} kg
+                      {(trip.cargoWeight || 0).toLocaleString()} kg
                     </td>
                     <td className="p-4 font-bold text-amber-400">
-                      ₹{trip.freightRevenue.toLocaleString()}
+                      ₹{(trip.plannedRevenue || (trip as any).freightRevenue || 0).toLocaleString()}
                     </td>
                     <td className="p-4">
                       <span
