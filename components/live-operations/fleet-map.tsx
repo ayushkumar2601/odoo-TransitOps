@@ -4,7 +4,7 @@ import React, { useEffect } from 'react'
 import { MapContainer, TileLayer, Marker, Popup, Circle, Polyline, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import { VehicleTelemetry, EASTERN_INDIA_HUBS, LOGISTICS_CORRIDORS } from '@/lib/live-tracking'
+import { VehicleTelemetry, EASTERN_INDIA_HUBS } from '@/lib/live-tracking'
 
 interface FleetMapProps {
   vehicles: VehicleTelemetry[]
@@ -14,7 +14,6 @@ interface FleetMapProps {
   showRoutes: boolean
 }
 
-// Map auto-center/pan helper when vehicle selected
 function AutoCenterMap({ selectedVehicle }: { selectedVehicle: VehicleTelemetry | null }) {
   const map = useMap()
   useEffect(() => {
@@ -48,7 +47,7 @@ function getMarkerColor(status: VehicleTelemetry['status']): string {
 function createVehicleDivIcon(v: VehicleTelemetry, isSelected: boolean) {
   const color = getMarkerColor(v.status)
   const ringStyle = isSelected
-    ? 'ring-4 ring-white shadow-[0_0_15px_rgba(255,255,255,0.8)] scale-125'
+    ? 'ring-4 ring-white shadow-[0_0_15px_rgba(255,255,255,0.8)] scale-125 z-50'
     : 'shadow-lg hover:scale-110'
 
   const html = `
@@ -73,6 +72,24 @@ function createVehicleDivIcon(v: VehicleTelemetry, isSelected: boolean) {
   })
 }
 
+function createPinIcon(color: string, label: string) {
+  const html = `
+    <div class="relative flex flex-col items-center">
+      <div style="background-color: ${color};" class="w-6 h-6 rounded-full border-2 border-white flex items-center justify-center text-white font-bold text-[10px] shadow-lg">
+        ${label}
+      </div>
+      <div style="border-top-color: ${color};" class="w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[6px]"></div>
+    </div>
+  `
+  return L.divIcon({
+    html,
+    className: 'custom-pin-marker',
+    iconSize: [24, 30],
+    iconAnchor: [12, 30],
+    popupAnchor: [0, -28]
+  })
+}
+
 export default function FleetMap({
   vehicles,
   selectedVehicle,
@@ -88,7 +105,6 @@ export default function FleetMap({
         scrollWheelZoom={true}
         className="w-full h-full z-10"
       >
-        {/* Modern OpenStreetMap Dark/Voyager Tile Layer */}
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | TransitOps Control Tower'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -121,31 +137,53 @@ export default function FleetMap({
             </Circle>
           ))}
 
-        {/* 2. Logistics Corridor Polylines */}
+        {/* 2. All Active Trip Road Corridors */}
         {showRoutes &&
-          LOGISTICS_CORRIDORS.map(route => (
-            <Polyline
-              key={route.id}
-              positions={route.waypoints}
-              pathOptions={{
-                color: '#38bdf8',
-                weight: 3,
-                opacity: 0.65,
-                dashArray: '8, 8'
-              }}
-            />
-          ))}
+          vehicles.map((v, idx) => {
+            if (!v.currentTrip?.routeGeometry) return null
+            const isSelected = selectedVehicle?.id === v.id
+            // Distinct road highway palette
+            const palette = ['#0284c7', '#059669', '#7c3aed', '#d97706', '#db2777', '#2563eb']
+            const color = isSelected ? '#3b82f6' : palette[idx % palette.length]
 
-        {/* 3. Selected Vehicle Active Trip Polyline Highlight */}
-        {selectedVehicle && selectedVehicle.currentTrip && (
-          <Polyline
-            positions={[selectedVehicle.currentTrip.sourceCoords, selectedVehicle.currentTrip.destCoords]}
-            pathOptions={{
-              color: '#10b981',
-              weight: 4,
-              opacity: 0.9
-            }}
-          />
+            return (
+              <Polyline
+                key={`route-${v.id}`}
+                positions={v.currentTrip.routeGeometry}
+                pathOptions={{
+                  color,
+                  weight: isSelected ? 5 : 3,
+                  opacity: isSelected ? 0.95 : 0.45
+                }}
+              />
+            )
+          })}
+
+        {/* 3. Selected Vehicle Origin & Destination Pins */}
+        {selectedVehicle && selectedVehicle.currentTrip && selectedVehicle.currentTrip.routeGeometry && (
+          <>
+            <Marker
+              position={selectedVehicle.currentTrip.routeGeometry[0]}
+              icon={createPinIcon('#10b981', 'A')}
+            >
+              <Popup>
+                <div className="p-1 text-slate-900 font-sans text-xs">
+                  <strong>Origin:</strong> {selectedVehicle.currentTrip.source}
+                </div>
+              </Popup>
+            </Marker>
+
+            <Marker
+              position={selectedVehicle.currentTrip.routeGeometry[selectedVehicle.currentTrip.routeGeometry.length - 1]}
+              icon={createPinIcon('#ef4444', 'B')}
+            >
+              <Popup>
+                <div className="p-1 text-slate-900 font-sans text-xs">
+                  <strong>Destination:</strong> {selectedVehicle.currentTrip.destination}
+                </div>
+              </Popup>
+            </Marker>
+          </>
         )}
 
         {/* 4. Fleet Markers */}
@@ -180,7 +218,10 @@ export default function FleetMap({
                     {v.currentTrip && (
                       <div className="mt-1.5 pt-1.5 border-t text-[11px] bg-slate-100 p-1.5 rounded">
                         <p className="font-semibold text-blue-700">{v.currentTrip.tripCode}: {v.currentTrip.source} → {v.currentTrip.destination}</p>
-                        <p className="text-slate-600">ETA: {v.currentTrip.etaMins} mins | {v.currentTrip.distanceRemainingKm} km left</p>
+                        {v.currentTrip.primaryHighway && (
+                          <p className="text-[10px] text-slate-500 font-semibold">{v.currentTrip.primaryHighway}</p>
+                        )}
+                        <p className="text-slate-600 mt-1">ETA: {v.currentTrip.etaMins} mins | {v.currentTrip.distanceRemainingKm} km left</p>
                       </div>
                     )}
                   </div>
@@ -191,10 +232,10 @@ export default function FleetMap({
         })}
       </MapContainer>
 
-      {/* Map Legend & Layer Controls Overlay */}
+      {/* Map Legend */}
       <div className="absolute bottom-4 left-4 z-20 bg-slate-900/90 backdrop-blur-md border border-white/15 rounded-xl p-3 text-white text-xs shadow-xl space-y-2">
         <div className="font-bold text-[11px] uppercase tracking-wider text-slate-300 border-b border-white/10 pb-1">
-          Telemetry Status Color Legend
+          Road Telemetry Status Legend
         </div>
         <div className="grid grid-cols-3 gap-x-4 gap-y-1.5 text-[11px]">
           <div className="flex items-center gap-1.5">

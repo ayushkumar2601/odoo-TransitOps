@@ -135,10 +135,14 @@ Phase 1.7 introduces a professional-grade real-time Fleet Operations Command Cen
       - 5 Judge One-Click Scenarios
 ```
 
-### 6.2 GPS Simulation Engine & Telemetry Layer (`lib/live-tracking`)
-- **25 Enterprise Vehicle GPS Profiles**: Seeded with real latitude/longitude coordinates across major Eastern India logistics corridors (Kolkata, Howrah, Durgapur, Asansol, Siliguri, Kharagpur, Ranchi, Jamshedpur, Patna, Bhubaneswar).
-- **High-Precision 3-Second Ticks**: `simulateTick()` updates latitude, longitude, heading, speed, distance remaining, and ETA for all vehicles with status `Moving` along their route polylines (`TRP-101` through `TRP-106`).
-- **Telemetry State**: Tracks speed (`km/h`), fuel level (`0-100%`), engine health (`0-100%`), odometer (`km`), cargo weight (`kg`), safety score (`0-100`), ROI yield (`%`), and open smart alerts.
+### 6.2 OSRM Road-Aware Routing & GPS Simulation Engine (`lib/live-tracking`)
+- **Authentic Road Network Geometries (`lib/live-tracking/prebuilt-routes.ts` & `route-engine.ts`)**: Replaces straight-line coordinate interpolation with authentic road segment waypoints derived along real Indian National Highways (NH-12, NH-19, NH-16, NH-27, NH-49). Supports live OSRM public API routing with instant zero-latency fallback to 10 prebuilt Eastern India highway corridors.
+- **Dynamic Realistic Speeds (`getDynamicSpeed`)**: Replaces static speeds with realistic velocity modeling:
+  - Open Highway / Expressway cruise: **55–75 km/h**
+  - City approach & turns: **20–45 km/h**
+  - Simulated Traffic Delay scenario: **8–15 km/h**
+- **Point-by-Point Road Geometry Playback**: Vehicles advance point-by-point along `trip.routeGeometry`. True compass heading (`0–360°`) is computed dynamically between adjacent road points, rotating each vehicle SVG marker to align perfectly with road bends.
+- **Simulation Multipliers**: Supports `1x`, `2x`, `5x`, and `10x` playback speeds for rapid hackathon demo evaluation.
 
 ### 6.3 Map Layer Architecture & Geofencing Hubs
 - **Status Color Encoding**: Markers visually encode live asset status:

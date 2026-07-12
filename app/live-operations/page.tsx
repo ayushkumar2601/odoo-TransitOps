@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { Sidebar } from '@/components/sidebar'
 import {
@@ -15,25 +15,20 @@ import CopilotDrawer from '@/components/live-operations/copilot-drawer'
 import {
   Play,
   Pause,
-  RotateCcw,
   Sparkles,
   Search,
   Layers,
   MapPin,
-  AlertTriangle,
   Zap,
   Radio,
-  Truck,
-  Filter,
-  CheckCircle2
+  Gauge
 } from 'lucide-react'
 
-// Dynamically import Leaflet Map with SSR disabled
 const DynamicFleetMap = dynamic(() => import('@/components/live-operations/fleet-map'), {
   ssr: false,
   loading: () => (
     <div className="w-full h-full rounded-2xl bg-surface-container-low border border-white/10 flex items-center justify-center text-on-surface-variant text-sm animate-pulse">
-      Initializing OpenStreetMap & Fleet Telemetry Engine...
+      Initializing OpenStreetMap Road Routing & Telemetry Engine...
     </div>
   )
 })
@@ -44,6 +39,9 @@ export default function LiveOperationsPage() {
 
   // Simulation Playback State
   const [isPlaying, setIsPlaying] = useState<boolean>(true)
+  const [speedMultiplier, setSpeedMultiplier] = useState<number>(1) // 1x, 2x, 5x, 10x
+  const [isTrafficDelay, setIsTrafficDelay] = useState<boolean>(false)
+
   const [showGeoFences, setShowGeoFences] = useState<boolean>(true)
   const [showRoutes, setShowRoutes] = useState<boolean>(true)
 
@@ -60,12 +58,12 @@ export default function LiveOperationsPage() {
     setVehicles([...INITIAL_FLEET_TELEMETRY])
   }, [])
 
-  // Live 3-second simulation tick interval
+  // Live 3-second authentic road geometry simulation interval
   useEffect(() => {
     if (!isPlaying) return
     const interval = setInterval(() => {
       setVehicles(prev => {
-        const next = simulateTick(prev)
+        const next = simulateTick(prev, speedMultiplier, isTrafficDelay)
         if (selectedVehicle) {
           const updatedSel = next.find(v => v.id === selectedVehicle.id)
           if (updatedSel) setSelectedVehicle(updatedSel)
@@ -75,9 +73,15 @@ export default function LiveOperationsPage() {
     }, 3000)
 
     return () => clearInterval(interval)
-  }, [isPlaying, selectedVehicle])
+  }, [isPlaying, speedMultiplier, isTrafficDelay, selectedVehicle])
 
   function handleDemoScenario(scenario: DemoScenarioType) {
+    if (scenario === 'traffic') {
+      setIsTrafficDelay(true)
+    } else if (scenario === 'reset') {
+      setIsTrafficDelay(false)
+      setSpeedMultiplier(1)
+    }
     const { updatedVehicles, message } = applyDemoScenario(vehicles, scenario)
     setVehicles(updatedVehicles)
     if (selectedVehicle) {
@@ -118,7 +122,7 @@ export default function LiveOperationsPage() {
             <div className="flex items-center gap-2 mb-1">
               <span className="text-xs font-bold px-2.5 py-0.5 bg-emerald-500/10 text-emerald-400 rounded-full border border-emerald-500/20 uppercase flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                Phase 1.7 Control Tower
+                OSRM Road Network Engine
               </span>
             </div>
             <h1 className="text-2xl font-bold text-on-surface tracking-tight">Live Fleet Operations Center</h1>
@@ -190,7 +194,27 @@ export default function LiveOperationsPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Play/Pause/Reset Simulation */}
+            {/* Simulation Speed Multiplier Controls (1x, 2x, 5x, 10x) */}
+            <div className="flex items-center gap-1 bg-surface rounded-xl p-1 border border-white/10">
+              <span className="text-[10px] font-bold uppercase text-on-surface-variant px-1.5 flex items-center gap-1">
+                <Gauge className="w-3 h-3 text-primary" /> Speed:
+              </span>
+              {[1, 2, 5, 10].map(mult => (
+                <button
+                  key={mult}
+                  onClick={() => setSpeedMultiplier(mult)}
+                  className={`px-2 py-0.5 rounded-md font-mono text-[11px] font-bold transition-all ${
+                    speedMultiplier === mult
+                      ? 'bg-primary text-on-primary shadow-sm'
+                      : 'text-on-surface-variant hover:text-white'
+                  }`}
+                >
+                  {mult}x
+                </button>
+              ))}
+            </div>
+
+            {/* Play/Pause Simulation */}
             <div className="flex items-center gap-1 bg-surface rounded-xl p-1 border border-white/10">
               <button
                 onClick={() => setIsPlaying(!isPlaying)}
@@ -201,7 +225,7 @@ export default function LiveOperationsPage() {
                 }`}
               >
                 {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-                {isPlaying ? 'Live GPS Running' : 'Paused'}
+                {isPlaying ? 'Live Road GPS Running' : 'Paused'}
               </button>
             </div>
 

@@ -11,10 +11,7 @@ import {
   Activity,
   ShieldCheck,
   AlertTriangle,
-  User,
   Truck,
-  Wrench,
-  Clock,
   TrendingUp
 } from 'lucide-react'
 
@@ -78,7 +75,7 @@ export default function VehicleDetailDrawer({
             <div>
               <p className="text-[11px] uppercase font-bold text-on-surface-variant">Geofence Status</p>
               <p className="text-xs font-semibold text-white">
-                {geoStatus.inside ? `Inside: ${geoStatus.hub?.name}` : 'En Route (Open Corridor)'}
+                {geoStatus.inside ? `Inside: ${geoStatus.hub?.name}` : 'En Route (National Highway Network)'}
               </p>
             </div>
           </div>
@@ -87,27 +84,53 @@ export default function VehicleDetailDrawer({
           </span>
         </div>
 
-        {/* Active Trip Section */}
+        {/* Active Haulage Road Mission Section */}
         {vehicle.currentTrip ? (
           <div className="p-4 rounded-2xl bg-primary/10 border border-primary/20 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase text-primary tracking-wider">Active Haulage Mission</span>
+              <span className="text-xs font-bold uppercase text-primary tracking-wider">Road Corridor Mission</span>
               <span className="font-mono text-xs font-bold text-white">{vehicle.currentTrip.tripCode}</span>
             </div>
+
             <div className="flex items-center justify-between text-xs font-semibold text-white">
               <span>{vehicle.currentTrip.source}</span>
               <span className="text-primary">→</span>
               <span>{vehicle.currentTrip.destination}</span>
             </div>
-            <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
-              <div
-                style={{ width: `${Math.min(100, Math.max(10, 100 - (vehicle.currentTrip.distanceRemainingKm / 350) * 100))}%` }}
-                className="bg-primary h-full transition-all duration-500"
-              />
+
+            {vehicle.currentTrip.primaryHighway && (
+              <div className="flex items-center gap-1.5 text-xs text-sky-300 font-semibold bg-black/20 p-2 rounded-lg">
+                <Navigation className="w-3.5 h-3.5 text-primary shrink-0" />
+                Current Road: {vehicle.currentTrip.primaryHighway}
+              </div>
+            )}
+
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-on-surface-variant">Route Completion</span>
+                <span className="font-bold text-white">{vehicle.currentTrip.progressPercent}%</span>
+              </div>
+              <div className="w-full bg-white/10 rounded-full h-2.5 overflow-hidden">
+                <div
+                  style={{ width: `${Math.min(100, Math.max(5, vehicle.currentTrip.progressPercent))}%` }}
+                  className="bg-primary h-full transition-all duration-500"
+                />
+              </div>
             </div>
-            <div className="flex items-center justify-between text-[11px] text-on-surface-variant">
-              <span>Remaining: <strong className="text-white">{vehicle.currentTrip.distanceRemainingKm} km</strong></span>
-              <span>ETA: <strong className="text-emerald-400">{vehicle.currentTrip.etaMins} mins</strong></span>
+
+            <div className="grid grid-cols-3 gap-2 pt-1 border-t border-white/10 text-center text-xs">
+              <div className="p-2 rounded bg-black/20">
+                <span className="text-[10px] uppercase text-on-surface-variant block">Remaining</span>
+                <strong className="text-white font-mono">{vehicle.currentTrip.distanceRemainingKm} km</strong>
+              </div>
+              <div className="p-2 rounded bg-black/20">
+                <span className="text-[10px] uppercase text-on-surface-variant block">ETA</span>
+                <strong className="text-emerald-400 font-mono">{vehicle.currentTrip.etaMins} min</strong>
+              </div>
+              <div className="p-2 rounded bg-black/20">
+                <span className="text-[10px] uppercase text-on-surface-variant block">Avg Speed</span>
+                <strong className="text-sky-300 font-mono">{vehicle.speed} km/h</strong>
+              </div>
             </div>
           </div>
         ) : (
@@ -139,7 +162,7 @@ export default function VehicleDetailDrawer({
           <div className="grid grid-cols-2 gap-3">
             <div className="p-3.5 rounded-xl bg-surface-container-low border border-white/10">
               <div className="flex items-center gap-2 text-on-surface-variant text-xs mb-1">
-                <Gauge className="w-3.5 h-3.5 text-primary" /> Speed
+                <Gauge className="w-3.5 h-3.5 text-primary" /> Dynamic Speed
               </div>
               <div className="text-lg font-bold text-white font-mono">{vehicle.speed} km/h</div>
             </div>

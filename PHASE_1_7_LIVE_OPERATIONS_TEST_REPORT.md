@@ -29,6 +29,8 @@ All 9 functional verification suites—spanning interactive map rendering, simul
 | **TS-17.7** | **Geofence Inside/Outside Engine** | Verification of circular vector boundaries around 5 Eastern India hubs (`CCU-01`, `DGP-02`, `SGU-03`, `RNC-04`, `BBI-05`) and accurate inside/outside badge derivation. | **PASS** |
 | **TS-17.8** | **Slide-Over Vehicle Detail Drawer** | Verification of rich slide-over drawer displaying operator safety score, speed gauge, fuel %, engine health, ROI yield, odometer, and active Smart Alerts. | **PASS** |
 | **TS-17.9** | **Floating AI Fleet Copilot Integration** | Verification of natural language prompt execution ("Which vehicles are idle?", "Show vehicles near Durgapur", "Which assets have low fuel?") over live telemetry coordinates. | **PASS** |
+| **TS-17.10** | **OSRM Road Network Routing & Fallback** | Verification that vehicles travel along authentic road geometries (`lib/live-tracking/prebuilt-routes.ts` & `route-engine.ts`) along National Highways NH-12, NH-19, NH-16, NH-27, and NH-49 without straight-line clipping. | **PASS** |
+| **TS-17.11** | **Dynamic Speed Model & Playback Multipliers** | Verification of realistic velocity scaling (55–75 km/h highway, 20–45 km/h city, 8–15 km/h traffic) and `1x`, `2x`, `5x`, `10x` simulation playback speeds. | **PASS** |
 
 ---
 

@@ -1,8 +1,18 @@
-import { VehicleTelemetry, EASTERN_INDIA_HUBS, LOGISTICS_CORRIDORS, INITIAL_FLEET_TELEMETRY, HubGeoFence } from './telemetry-data'
+import {
+  VehicleTelemetry,
+  EASTERN_INDIA_HUBS,
+  INITIAL_FLEET_TELEMETRY,
+  HubGeoFence
+} from './telemetry-data'
+import {
+  getHeadingFromWaypoints,
+  getDynamicSpeed,
+  getPrebuiltRoadRoute
+} from './route-engine'
 
-// Helper: Distance between two lat/lng coordinates in km (Haversine formula)
+// Helper: Haversine distance between two lat/lng coordinates in km
 export function getDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
-  const R = 6371 // Earth radius in km
+  const R = 6371
   const dLat = (lat2 - lat1) * (Math.PI / 180)
   const dLon = (lon2 - lon1) * (Math.PI / 180)
   const a =
@@ -14,7 +24,10 @@ export function getDistanceKm(lat1: number, lon1: number, lat2: number, lon2: nu
 }
 
 // Helper: Determine if vehicle is inside any Eastern India hub geofence
-export function getVehicleGeoFenceStatus(lat: number, lon: number): { inside: boolean; hub?: HubGeoFence } {
+export function getVehicleGeoFenceStatus(
+  lat: number,
+  lon: number
+): { inside: boolean; hub?: HubGeoFence } {
   for (const hub of EASTERN_INDIA_HUBS) {
     const distKm = getDistanceKm(lat, lon, hub.center[0], hub.center[1])
     if (distKm * 1000 <= hub.radiusMeters) {
@@ -24,56 +37,66 @@ export function getVehicleGeoFenceStatus(lat: number, lon: number): { inside: bo
   return { inside: false }
 }
 
-// 1. Simulate 1 Tick (approx 3 seconds of high-precision movement along route)
-export function simulateTick(vehicles: VehicleTelemetry[]): VehicleTelemetry[] {
+// Helper: Calculate total remaining km along remaining road waypoints
+export function calculateRemainingRoadDistance(
+  geom: [number, number][],
+  currentIndex: number
+): number {
+  if (!geom || currentIndex >= geom.length - 1) return 0
+  let total = 0
+  for (let i = currentIndex; i < geom.length - 1; i++) {
+    total += getDistanceKm(geom[i][0], geom[i][1], geom[i + 1][0], geom[i + 1][1])
+  }
+  return Math.round(total * 10) / 10
+}
+
+// 1. Simulate 1 Tick of Authentic Road Geometry Playback
+export function simulateTick(
+  vehicles: VehicleTelemetry[],
+  speedMultiplier = 1,
+  isTrafficDelay = false
+): VehicleTelemetry[] {
   return vehicles.map(v => {
-    if (v.status !== 'Moving' || !v.currentTrip) {
+    if (v.status !== 'Moving' || !v.currentTrip || !v.currentTrip.routeGeometry) {
       return {
         ...v,
         lastUpdated: new Date().toLocaleTimeString('en-US', { hour12: false })
       }
     }
 
-    const dest = v.currentTrip.destCoords
-    const currentLat = v.latitude
-    const currentLon = v.longitude
+    const geom = v.currentTrip.routeGeometry
+    const currIdx = v.currentTrip.currentRouteIndex ?? 0
 
-    // Step size ~ 0.015 deg per tick for visible demo movement
-    const dLat = dest[0] - currentLat
-    const dLon = dest[1] - currentLon
-    const distanceToDest = Math.sqrt(dLat * dLat + dLon * dLon)
+    // Step advancement based on speed multiplier (1x -> 1 point, 2x -> 2 points, 5x -> 4 points, 10x -> 8 points)
+    const stepAdvance = Math.max(1, Math.round(speedMultiplier * (isTrafficDelay ? 0.4 : 1)))
+    let nextIdx = currIdx + stepAdvance
 
-    if (distanceToDest < 0.02) {
-      // Reached destination corridor point -> swap or bounce back slightly to keep active
-      return {
-        ...v,
-        latitude: dest[0] - 0.1,
-        longitude: dest[1] - 0.1,
-        lastUpdated: new Date().toLocaleTimeString('en-US', { hour12: false })
-      }
+    if (nextIdx >= geom.length - 1) {
+      // Reached destination corridor point -> loop back to origin or reverse smoothly for continuous demo
+      nextIdx = 1
     }
 
-    const stepFactor = 0.008
-    const nextLat = currentLat + dLat * stepFactor
-    const nextLon = currentLon + dLon * stepFactor
+    const currentPoint = geom[currIdx]
+    const nextPoint = geom[nextIdx]
+    const headingDeg = getHeadingFromWaypoints(currentPoint, nextPoint)
+    const progressRatio = nextIdx / geom.length
+    const dynamicSpeed = getDynamicSpeed(v.status, progressRatio, isTrafficDelay)
 
-    // Heading calculation
-    const angleRad = Math.atan2(dLon, dLat)
-    let headingDeg = Math.round((angleRad * 180) / Math.PI)
-    if (headingDeg < 0) headingDeg += 360
-
-    const remainingKm = getDistanceKm(nextLat, nextLon, dest[0], dest[1])
-    const eta = Math.max(5, Math.round((remainingKm / Math.max(1, v.speed)) * 60))
+    const remainingKm = calculateRemainingRoadDistance(geom, nextIdx)
+    const etaMins = Math.max(2, Math.round((remainingKm / Math.max(15, dynamicSpeed)) * 60))
 
     return {
       ...v,
-      latitude: Math.round(nextLat * 10000) / 10000,
-      longitude: Math.round(nextLon * 10000) / 10000,
+      latitude: nextPoint[0],
+      longitude: nextPoint[1],
       heading: headingDeg,
+      speed: dynamicSpeed,
       currentTrip: {
         ...v.currentTrip,
+        currentRouteIndex: nextIdx,
+        progressPercent: Math.round(progressRatio * 100),
         distanceRemainingKm: remainingKm,
-        etaMins: eta
+        etaMins
       },
       lastUpdated: new Date().toLocaleTimeString('en-US', { hour12: false })
     }
@@ -89,41 +112,43 @@ export function applyDemoScenario(
 ): { updatedVehicles: VehicleTelemetry[]; message: string } {
   switch (scenario) {
     case 'dispatch': {
-      // Find first Stopped vehicle and dispatch it on Corridor 1
+      // Find first Stopped vehicle and dispatch it on NH-12 / NH-27 Kolkata -> Siliguri corridor
       const stoppedIdx = vehicles.findIndex(v => v.status === 'Stopped')
       if (stoppedIdx === -1) {
         return { updatedVehicles: vehicles, message: 'All available vehicles are already dispatched or in shop.' }
       }
       const clone = [...vehicles]
       const target = clone[stoppedIdx]
-      const corridor = LOGISTICS_CORRIDORS[0]
+      const roadRoute = getPrebuiltRoadRoute(0)
       clone[stoppedIdx] = {
         ...target,
         status: 'Moving',
-        speed: 65,
-        latitude: corridor.sourceCoords[0],
-        longitude: corridor.sourceCoords[1],
+        speed: 62,
+        latitude: roadRoute.routeGeometry[0][0],
+        longitude: roadRoute.routeGeometry[0][1],
         currentTrip: {
           tripCode: `TRP-SIM-${Math.floor(100 + Math.random() * 900)}`,
-          source: corridor.source,
-          destination: corridor.destination,
-          sourceCoords: corridor.sourceCoords,
-          destCoords: corridor.destCoords,
-          progressPercent: 5,
-          distanceRemainingKm: corridor.totalDistanceKm,
-          etaMins: Math.round((corridor.totalDistanceKm / 65) * 60)
+          source: 'Kolkata Port',
+          destination: 'Siliguri Gateway',
+          sourceCoords: roadRoute.routeGeometry[0],
+          destCoords: roadRoute.routeGeometry[roadRoute.routeGeometry.length - 1],
+          progressPercent: 2,
+          distanceRemainingKm: roadRoute.totalDistanceKm,
+          etaMins: roadRoute.estimatedDurationMins,
+          primaryHighway: roadRoute.primaryHighway,
+          routeGeometry: roadRoute.routeGeometry,
+          currentRouteIndex: 1
         },
         openAlerts: [],
         lastUpdated: 'Live'
       }
       return {
         updatedVehicles: clone,
-        message: `Simulated Dispatch: ${target.registrationNumber} (${target.vehicleName}) dispatched on ${corridor.source} → ${corridor.destination}.`
+        message: `Simulated Road Dispatch: ${target.registrationNumber} dispatched on ${roadRoute.primaryHighway} (${roadRoute.totalDistanceKm} km).`
       }
     }
 
     case 'breakdown': {
-      // Pick first Moving vehicle and trigger immediate engine breakdown
       const movingIdx = vehicles.findIndex(v => v.status === 'Moving')
       if (movingIdx === -1) {
         return { updatedVehicles: vehicles, message: 'No moving vehicle found to simulate breakdown.' }
@@ -134,27 +159,25 @@ export function applyDemoScenario(
         ...target,
         status: 'Breakdown',
         speed: 0,
-        engineHealth: 31,
+        engineHealth: 29,
         openAlerts: ['ENGINE_OVERHEAT_CRITICAL', 'IMMEDIATE_ROADSIDE_ASSISTANCE'],
         lastUpdated: 'Live'
       }
       return {
         updatedVehicles: clone,
-        message: `Simulated Breakdown: ${target.registrationNumber} engine overheated near ${target.currentTrip?.destination || 'Corridor'}. Critical alert raised!`
+        message: `Simulated Breakdown: ${target.registrationNumber} engine overheated along ${target.currentTrip?.primaryHighway || 'Highway'}. Critical alert raised!`
       }
     }
 
     case 'traffic': {
-      // Slow down all moving vehicles by 50%
       const clone = vehicles.map(v => {
         if (v.status === 'Moving' && v.currentTrip) {
-          const newSpeed = Math.max(25, Math.round(v.speed * 0.5))
           return {
             ...v,
-            speed: newSpeed,
+            speed: Math.floor(8 + Math.random() * 7),
             currentTrip: {
               ...v.currentTrip,
-              etaMins: Math.round(v.currentTrip.etaMins * 1.6)
+              etaMins: Math.round(v.currentTrip.etaMins * 1.8)
             }
           }
         }
@@ -162,12 +185,11 @@ export function applyDemoScenario(
       })
       return {
         updatedVehicles: clone,
-        message: 'Simulated Traffic Delay: Highway congestion detected across National Highway NH-19. Speeds reduced and ETAs adjusted.'
+        message: 'Simulated Highway Congestion: Severe traffic bottleneck across NH-19 & NH-12. Speeds dropped to 8-15 km/h.'
       }
     }
 
     case 'fuel_drop': {
-      // Pick vehicle 01 or first moving vehicle and drop fuel to 11%
       const clone = [...vehicles]
       clone[0] = {
         ...clone[0],
@@ -184,7 +206,7 @@ export function applyDemoScenario(
     default:
       return {
         updatedVehicles: INITIAL_FLEET_TELEMETRY.map(v => ({ ...v })),
-        message: 'Simulation reset to default 25-asset Eastern India fleet telemetry.'
+        message: 'Simulation reset to default 25-asset Eastern India road telemetry.'
       }
   }
 }

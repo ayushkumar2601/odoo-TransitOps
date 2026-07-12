@@ -1,3 +1,5 @@
+import { getPrebuiltRoadRoute } from './route-engine'
+
 export interface HubGeoFence {
   id: string
   name: string
@@ -45,6 +47,9 @@ export interface VehicleTelemetry {
     progressPercent: number
     distanceRemainingKm: number
     etaMins: number
+    primaryHighway?: string
+    routeGeometry?: [number, number][]
+    currentRouteIndex?: number
   }
   lastUpdated: string
 }
@@ -88,82 +93,15 @@ export const EASTERN_INDIA_HUBS: HubGeoFence[] = [
   }
 ]
 
-// 2. 10 Active Corridors across Eastern India
-export const LOGISTICS_CORRIDORS: ActiveRouteCorridor[] = [
-  {
-    id: 'cor-01',
-    code: 'TRP-101',
-    source: 'Kolkata Port',
-    destination: 'Siliguri Gateway',
-    sourceCoords: [22.5726, 88.3639],
-    destCoords: [26.7271, 88.3953],
-    waypoints: [
-      [22.5726, 88.3639],
-      [23.8103, 88.2560],
-      [25.0108, 88.1411],
-      [26.7271, 88.3953]
-    ],
-    totalDistanceKm: 580
-  },
-  {
-    id: 'cor-02',
-    code: 'TRP-102',
-    source: 'Howrah Logistics Park',
-    destination: 'Durgapur Steel Hub',
-    sourceCoords: [22.5958, 88.2636],
-    destCoords: [23.5204, 87.3119],
-    waypoints: [
-      [22.5958, 88.2636],
-      [23.1042, 87.8920],
-      [23.5204, 87.3119]
-    ],
-    totalDistanceKm: 175
-  },
-  {
-    id: 'cor-03',
-    code: 'TRP-103',
-    source: 'Durgapur Steel Hub',
-    destination: 'Ranchi Industrial Yard',
-    sourceCoords: [23.5204, 87.3119],
-    destCoords: [23.3441, 85.3096],
-    waypoints: [
-      [23.5204, 87.3119],
-      [23.6739, 86.9524],
-      [23.3441, 85.3096]
-    ],
-    totalDistanceKm: 210
-  },
-  {
-    id: 'cor-04',
-    code: 'TRP-104',
-    source: 'Kolkata Port',
-    destination: 'Bhubaneswar Coastal Depot',
-    sourceCoords: [22.5726, 88.3639],
-    destCoords: [20.2961, 85.8245],
-    waypoints: [
-      [22.5726, 88.3639],
-      [21.4934, 86.9333],
-      [20.2961, 85.8245]
-    ],
-    totalDistanceKm: 440
-  },
-  {
-    id: 'cor-05',
-    code: 'TRP-105',
-    source: 'Ranchi Industrial Yard',
-    destination: 'Patna Terminal',
-    sourceCoords: [23.3441, 85.3096],
-    destCoords: [25.5941, 85.1376],
-    waypoints: [
-      [23.3441, 85.3096],
-      [24.1800, 85.4200],
-      [25.5941, 85.1376]
-    ],
-    totalDistanceKm: 330
-  }
-]
+// Pre-generate authentic road routes for seeded active vehicles
+const route1 = getPrebuiltRoadRoute(0) // Kolkata -> Siliguri
+const route2 = getPrebuiltRoadRoute(1) // Howrah -> Ranchi
+const route3 = getPrebuiltRoadRoute(2) // Durgapur -> Bhubaneswar
+const route4 = getPrebuiltRoadRoute(3) // Kharagpur -> Jamshedpur
+const route5 = getPrebuiltRoadRoute(4) // Asansol -> Patna
+const route6 = getPrebuiltRoadRoute(5) // Kolkata -> Dhanbad
 
-// 3. 25 Seeded Enterprise Fleet Telemetry Assets
+// 2. 25 Seeded Enterprise Fleet Telemetry Assets with Authentic Road Geometry
 export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
   {
     id: 'veh-01',
@@ -172,8 +110,8 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     vehicleType: 'Container Truck',
     driverName: 'Rahul Sharma',
     status: 'Moving',
-    latitude: 24.3102,
-    longitude: 88.2104,
+    latitude: route1.routeGeometry[25][0],
+    longitude: route1.routeGeometry[25][1],
     heading: 14,
     speed: 68,
     fuelPercent: 78,
@@ -188,11 +126,14 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
       tripCode: 'TRP-101',
       source: 'Kolkata Port',
       destination: 'Siliguri Gateway',
-      sourceCoords: [22.5726, 88.3639],
-      destCoords: [26.7271, 88.3953],
-      progressPercent: 42,
-      distanceRemainingKm: 336,
-      etaMins: 295
+      sourceCoords: route1.routeGeometry[0],
+      destCoords: route1.routeGeometry[route1.routeGeometry.length - 1],
+      progressPercent: 32,
+      distanceRemainingKm: 380,
+      etaMins: 340,
+      primaryHighway: route1.primaryHighway,
+      routeGeometry: route1.routeGeometry,
+      currentRouteIndex: 25
     },
     lastUpdated: 'Live'
   },
@@ -203,10 +144,10 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     vehicleType: 'Refrigerated Truck',
     driverName: 'Amit Das',
     status: 'Moving',
-    latitude: 23.0511,
-    longitude: 87.9812,
+    latitude: route2.routeGeometry[18][0],
+    longitude: route2.routeGeometry[18][1],
     heading: 310,
-    speed: 62,
+    speed: 64,
     fuelPercent: 64,
     engineHealth: 94,
     odometer: 89300,
@@ -218,12 +159,15 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     currentTrip: {
       tripCode: 'TRP-102',
       source: 'Howrah Logistics Park',
-      destination: 'Durgapur Steel Hub',
-      sourceCoords: [22.5958, 88.2636],
-      destCoords: [23.5204, 87.3119],
-      progressPercent: 55,
-      distanceRemainingKm: 78,
-      etaMins: 75
+      destination: 'Ranchi Industrial Yard',
+      sourceCoords: route2.routeGeometry[0],
+      destCoords: route2.routeGeometry[route2.routeGeometry.length - 1],
+      progressPercent: 40,
+      distanceRemainingKm: 240,
+      etaMins: 220,
+      primaryHighway: route2.primaryHighway,
+      routeGeometry: route2.routeGeometry,
+      currentRouteIndex: 18
     },
     lastUpdated: 'Live'
   },
@@ -234,9 +178,9 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     vehicleType: 'Container Truck',
     driverName: 'Subhajit Roy',
     status: 'Moving',
-    latitude: 23.5901,
-    longitude: 86.8123,
-    heading: 265,
+    latitude: route3.routeGeometry[22][0],
+    longitude: route3.routeGeometry[22][1],
+    heading: 210,
     speed: 58,
     fuelPercent: 82,
     engineHealth: 98,
@@ -249,12 +193,15 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     currentTrip: {
       tripCode: 'TRP-103',
       source: 'Durgapur Steel Hub',
-      destination: 'Ranchi Industrial Yard',
-      sourceCoords: [23.5204, 87.3119],
-      destCoords: [23.3441, 85.3096],
-      progressPercent: 65,
-      distanceRemainingKm: 73,
-      etaMins: 72
+      destination: 'Bhubaneswar Coastal Depot',
+      sourceCoords: route3.routeGeometry[0],
+      destCoords: route3.routeGeometry[route3.routeGeometry.length - 1],
+      progressPercent: 48,
+      distanceRemainingKm: 230,
+      etaMins: 215,
+      primaryHighway: route3.primaryHighway,
+      routeGeometry: route3.routeGeometry,
+      currentRouteIndex: 22
     },
     lastUpdated: 'Live'
   },
@@ -265,11 +212,11 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     vehicleType: 'Light Commercial Vehicle',
     driverName: 'Arindam Sen',
     status: 'Moving',
-    latitude: 21.4110,
-    longitude: 86.8900,
-    heading: 210,
+    latitude: route4.routeGeometry[12][0],
+    longitude: route4.routeGeometry[12][1],
+    heading: 290,
     speed: 71,
-    fuelPercent: 14, // Low Fuel Trigger
+    fuelPercent: 14,
     engineHealth: 91,
     odometer: 76500,
     cargoWeight: 7800,
@@ -279,13 +226,16 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     openAlerts: ['LOW_FUEL_ALERT', 'BR-004_EXPIRED_LICENSE_WARNING'],
     currentTrip: {
       tripCode: 'TRP-104',
-      source: 'Kolkata Port',
-      destination: 'Bhubaneswar Coastal Depot',
-      sourceCoords: [22.5726, 88.3639],
-      destCoords: [20.2961, 85.8245],
-      progressPercent: 50,
-      distanceRemainingKm: 220,
-      etaMins: 185
+      source: 'Kharagpur Hub',
+      destination: 'Jamshedpur Yard',
+      sourceCoords: route4.routeGeometry[0],
+      destCoords: route4.routeGeometry[route4.routeGeometry.length - 1],
+      progressPercent: 55,
+      distanceRemainingKm: 62,
+      etaMins: 55,
+      primaryHighway: route4.primaryHighway,
+      routeGeometry: route4.routeGeometry,
+      currentRouteIndex: 12
     },
     lastUpdated: 'Live'
   },
@@ -296,9 +246,9 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     vehicleType: 'Light Commercial Vehicle',
     driverName: 'Rakesh Kumar',
     status: 'Moving',
-    latitude: 24.5100,
-    longitude: 85.2800,
-    heading: 350,
+    latitude: route5.routeGeometry[16][0],
+    longitude: route5.routeGeometry[16][1],
+    heading: 325,
     speed: 65,
     fuelPercent: 71,
     engineHealth: 92,
@@ -310,13 +260,16 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     openAlerts: [],
     currentTrip: {
       tripCode: 'TRP-105',
-      source: 'Ranchi Industrial Yard',
-      destination: 'Patna Terminal',
-      sourceCoords: [23.3441, 85.3096],
-      destCoords: [25.5941, 85.1376],
-      progressPercent: 60,
-      distanceRemainingKm: 132,
-      etaMins: 120
+      source: 'Asansol Terminal',
+      destination: 'Patna Freight Depot',
+      sourceCoords: route5.routeGeometry[0],
+      destCoords: route5.routeGeometry[route5.routeGeometry.length - 1],
+      progressPercent: 50,
+      distanceRemainingKm: 170,
+      etaMins: 155,
+      primaryHighway: route5.primaryHighway,
+      routeGeometry: route5.routeGeometry,
+      currentRouteIndex: 16
     },
     lastUpdated: 'Live'
   },
@@ -327,12 +280,12 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     vehicleType: 'Container Truck',
     driverName: 'Debashis Chatterjee',
     status: 'Breakdown',
-    latitude: 23.4100,
-    longitude: 87.8200,
-    heading: 0,
+    latitude: route6.routeGeometry[14][0],
+    longitude: route6.routeGeometry[14][1],
+    heading: 310,
     speed: 0,
     fuelPercent: 44,
-    engineHealth: 42, // Breakdown Alert
+    engineHealth: 42,
     odometer: 98100,
     cargoWeight: 11000,
     safetyScore: 87,
@@ -342,12 +295,15 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     currentTrip: {
       tripCode: 'TRP-106',
       source: 'Kolkata Port',
-      destination: 'Asansol Terminal',
-      sourceCoords: [22.5726, 88.3639],
-      destCoords: [23.6739, 86.9524],
+      destination: 'Dhanbad Mining Hub',
+      sourceCoords: route6.routeGeometry[0],
+      destCoords: route6.routeGeometry[route6.routeGeometry.length - 1],
       progressPercent: 48,
-      distanceRemainingKm: 110,
-      etaMins: 999
+      distanceRemainingKm: 140,
+      etaMins: 999,
+      primaryHighway: route6.primaryHighway,
+      routeGeometry: route6.routeGeometry,
+      currentRouteIndex: 14
     },
     lastUpdated: 'Live'
   },
@@ -359,7 +315,7 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     driverName: 'Bikramjit Ghosh',
     status: 'Stopped',
     latitude: 22.5800,
-    longitude: 88.3500, // Inside Kolkata Hub
+    longitude: 88.3500,
     heading: 0,
     speed: 0,
     fuelPercent: 88,
@@ -380,7 +336,7 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     driverName: 'Suman Banerjee',
     status: 'Idling',
     latitude: 23.5150,
-    longitude: 87.3200, // Inside Durgapur Hub
+    longitude: 87.3200,
     heading: 90,
     speed: 0,
     fuelPercent: 58,
@@ -401,7 +357,7 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     driverName: 'Priya Mukherjee',
     status: 'Stopped',
     latitude: 26.7300,
-    longitude: 88.4000, // Inside Siliguri Hub
+    longitude: 88.4000,
     heading: 0,
     speed: 0,
     fuelPercent: 91,
@@ -422,7 +378,7 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     driverName: 'Sourav Ganguly',
     status: 'Maintenance',
     latitude: 22.5600,
-    longitude: 88.3300, // Kolkata Workshop
+    longitude: 88.3300,
     heading: 0,
     speed: 0,
     fuelPercent: 62,
@@ -442,10 +398,10 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     vehicleType: 'Light Commercial Vehicle',
     driverName: 'Koushik Dutta',
     status: 'Moving',
-    latitude: 25.1000,
-    longitude: 85.3000,
+    latitude: route1.routeGeometry[38][0],
+    longitude: route1.routeGeometry[38][1],
     heading: 10,
-    speed: 55,
+    speed: 61,
     fuelPercent: 74,
     engineHealth: 93,
     odometer: 94100,
@@ -454,6 +410,19 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     roiScore: 86,
     lastMaintenance: '2026-06-12',
     openAlerts: [],
+    currentTrip: {
+      tripCode: 'TRP-107',
+      source: 'Kolkata Port',
+      destination: 'Siliguri Gateway',
+      sourceCoords: route1.routeGeometry[0],
+      destCoords: route1.routeGeometry[route1.routeGeometry.length - 1],
+      progressPercent: 55,
+      distanceRemainingKm: 260,
+      etaMins: 235,
+      primaryHighway: route1.primaryHighway,
+      routeGeometry: route1.routeGeometry,
+      currentRouteIndex: 38
+    },
     lastUpdated: 'Live'
   },
   {
@@ -464,7 +433,7 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     driverName: 'Animesh Paul',
     status: 'Idling',
     latitude: 23.3500,
-    longitude: 85.3200, // Inside Ranchi Hub
+    longitude: 85.3200,
     heading: 180,
     speed: 0,
     fuelPercent: 66,
@@ -506,7 +475,7 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     driverName: 'Prasenjit Mondal',
     status: 'Offline',
     latitude: 22.8046,
-    longitude: 86.2029, // Jamshedpur Yard
+    longitude: 86.2029,
     heading: 0,
     speed: 0,
     fuelPercent: 53,
@@ -527,7 +496,7 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     driverName: 'Sanjay Yadav',
     status: 'Stopped',
     latitude: 25.5900,
-    longitude: 85.1400, // Patna Depot
+    longitude: 85.1400,
     heading: 0,
     speed: 0,
     fuelPercent: 81,
@@ -547,10 +516,10 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     vehicleType: 'Container Truck',
     driverName: 'Tapas Biswas',
     status: 'Moving',
-    latitude: 24.8100,
-    longitude: 88.2900,
-    heading: 18,
-    speed: 64,
+    latitude: route2.routeGeometry[30][0],
+    longitude: route2.routeGeometry[30][1],
+    heading: 295,
+    speed: 67,
     fuelPercent: 77,
     engineHealth: 95,
     odometer: 104200,
@@ -559,6 +528,19 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     roiScore: 85,
     lastMaintenance: '2026-06-14',
     openAlerts: [],
+    currentTrip: {
+      tripCode: 'TRP-108',
+      source: 'Howrah Logistics Park',
+      destination: 'Ranchi Industrial Yard',
+      sourceCoords: route2.routeGeometry[0],
+      destCoords: route2.routeGeometry[route2.routeGeometry.length - 1],
+      progressPercent: 65,
+      distanceRemainingKm: 145,
+      etaMins: 130,
+      primaryHighway: route2.primaryHighway,
+      routeGeometry: route2.routeGeometry,
+      currentRouteIndex: 30
+    },
     lastUpdated: 'Live'
   },
   {
@@ -569,7 +551,7 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     driverName: 'Alok Bhattacharya',
     status: 'Stopped',
     latitude: 22.3460,
-    longitude: 87.2320, // Kharagpur Hub
+    longitude: 87.2320,
     heading: 0,
     speed: 0,
     fuelPercent: 85,
@@ -589,8 +571,8 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     vehicleType: 'Container Truck',
     driverName: 'Chandan Halder',
     status: 'Moving',
-    latitude: 20.8000,
-    longitude: 86.4000,
+    latitude: route3.routeGeometry[35][0],
+    longitude: route3.routeGeometry[35][1],
     heading: 215,
     speed: 66,
     fuelPercent: 69,
@@ -601,6 +583,19 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     roiScore: 89,
     lastMaintenance: '2026-06-05',
     openAlerts: [],
+    currentTrip: {
+      tripCode: 'TRP-109',
+      source: 'Durgapur Steel Hub',
+      destination: 'Bhubaneswar Coastal Depot',
+      sourceCoords: route3.routeGeometry[0],
+      destCoords: route3.routeGeometry[route3.routeGeometry.length - 1],
+      progressPercent: 75,
+      distanceRemainingKm: 115,
+      etaMins: 105,
+      primaryHighway: route3.primaryHighway,
+      routeGeometry: route3.routeGeometry,
+      currentRouteIndex: 35
+    },
     lastUpdated: 'Live'
   },
   {
@@ -632,7 +627,7 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     driverName: 'Gautam Nandi',
     status: 'Maintenance',
     latitude: 23.3300,
-    longitude: 85.3100, // Ranchi Workshop
+    longitude: 85.3100,
     heading: 0,
     speed: 0,
     fuelPercent: 55,
@@ -652,10 +647,10 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     vehicleType: 'Container Truck',
     driverName: 'Indranil Bose',
     status: 'Moving',
-    latitude: 24.1000,
-    longitude: 88.2400,
+    latitude: route1.routeGeometry[15][0],
+    longitude: route1.routeGeometry[15][1],
     heading: 15,
-    speed: 61,
+    speed: 63,
     fuelPercent: 83,
     engineHealth: 97,
     odometer: 92300,
@@ -664,6 +659,19 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     roiScore: 94,
     lastMaintenance: '2026-06-19',
     openAlerts: [],
+    currentTrip: {
+      tripCode: 'TRP-110',
+      source: 'Kolkata Port',
+      destination: 'Siliguri Gateway',
+      sourceCoords: route1.routeGeometry[0],
+      destCoords: route1.routeGeometry[route1.routeGeometry.length - 1],
+      progressPercent: 20,
+      distanceRemainingKm: 460,
+      etaMins: 410,
+      primaryHighway: route1.primaryHighway,
+      routeGeometry: route1.routeGeometry,
+      currentRouteIndex: 15
+    },
     lastUpdated: 'Live'
   },
   {
@@ -674,7 +682,7 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     driverName: 'Joydeep Sarkar',
     status: 'Stopped',
     latitude: 20.3000,
-    longitude: 85.8300, // Inside Bhubaneswar Hub
+    longitude: 85.8300,
     heading: 0,
     speed: 0,
     fuelPercent: 89,
@@ -694,10 +702,10 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     vehicleType: 'Light Commercial Vehicle',
     driverName: 'Kalyan Chakraborty',
     status: 'Moving',
-    latitude: 23.4500,
-    longitude: 86.1000,
+    latitude: route5.routeGeometry[24][0],
+    longitude: route5.routeGeometry[24][1],
     heading: 275,
-    speed: 67,
+    speed: 68,
     fuelPercent: 70,
     engineHealth: 94,
     odometer: 86500,
@@ -706,6 +714,19 @@ export const INITIAL_FLEET_TELEMETRY: VehicleTelemetry[] = [
     roiScore: 89,
     lastMaintenance: '2026-06-16',
     openAlerts: [],
+    currentTrip: {
+      tripCode: 'TRP-111',
+      source: 'Asansol Terminal',
+      destination: 'Patna Freight Depot',
+      sourceCoords: route5.routeGeometry[0],
+      destCoords: route5.routeGeometry[route5.routeGeometry.length - 1],
+      progressPercent: 70,
+      distanceRemainingKm: 102,
+      etaMins: 95,
+      primaryHighway: route5.primaryHighway,
+      routeGeometry: route5.routeGeometry,
+      currentRouteIndex: 24
+    },
     lastUpdated: 'Live'
   },
   {
