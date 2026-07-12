@@ -196,6 +196,6 @@ Use the `/signin` portal to instantly test **Fleet Manager**, **Dispatcher**, **
 ---
 
 <div align="center">
-  <p>Built for the <strong>Odoo x Adamas University Hackathon 2026</strong></p>
+  <p>Built for the <strong>Odoo Hackathon 2026</strong></p>
   <p>⭐ Star this repository if you find TransitOps helpful!</p>
 </div>
